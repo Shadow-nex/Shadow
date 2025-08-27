@@ -13,7 +13,8 @@
       --menu-bg: #1a1a1a;
       --content-bg: rgba(20, 2, 2, 0.93);
     }
-    /* 🌟 Tema blanco */
+
+    /* 🌟 Tema Blanco */
     :root.white-theme {
       --main-bg: #ffffff;
       --main-red: #333;
@@ -22,6 +23,27 @@
       --menu-bg: #f5f5f5;
       --content-bg: #ffffff;
     }
+
+    /* 🌟 Tema Azul */
+    :root.blue-theme {
+      --main-bg: #0a192f;
+      --main-red: #00bcd4;
+      --main-neon: #2196f3;
+      --text-color: #e0f2ff;
+      --menu-bg: #132f4c;
+      --content-bg: #102a43;
+    }
+
+    /* 🌟 Tema Rojo */
+    :root.red-theme {
+      --main-bg: #2b0d0d;
+      --main-red: #f44336;
+      --main-neon: #ff1744;
+      --text-color: #ffeaea;
+      --menu-bg: #400000;
+      --content-bg: #330000;
+    }
+
     body {
       margin: 0;
       font-family: 'Segoe UI', Arial, sans-serif;
@@ -30,18 +52,20 @@
       min-height: 100vh;
       transition: all 0.3s ease;
     }
+
     nav {
       background: var(--menu-bg);
       display: flex;
       justify-content: flex-start;
-      align-items: flex-start;
-      padding: 0.5em 0 0.5em 0.7em;
+      align-items: center;
+      padding: 0.5em 0.7em;
       box-shadow: 0 1px 12px #0003;
       position: sticky;
       top: 0;
       z-index: 9;
-      gap: 2.5em;
+      gap: 1em;
     }
+
     .nav-brand {
       display: flex;
       flex-direction: column;
@@ -50,6 +74,7 @@
       min-width: 70px;
       user-select: none;
     }
+
     .nav-brand img {
       width: 54px;
       height: 54px;
@@ -58,38 +83,61 @@
       border: 2.5px solid var(--main-neon);
       margin-bottom: 0.23em;
       background: #fff;
-      box-shadow: none;
     }
+
     .nav-brand-text {
       text-align: center;
       font-size: 0.98em;
       font-weight: bold;
       color: var(--text-color);
       line-height: 1.1;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.15em;
     }
+
     .menu-links {
       display: flex;
       gap: 0.5em;
       align-items: center;
       flex: 1;
     }
+
     nav a {
       color: var(--text-color);
       text-decoration: none;
-      padding: 1em 2em;
+      padding: 0.8em 1.2em;
       font-weight: bold;
       border-bottom: 2px solid transparent;
       transition: color 0.2s, border-bottom 0.2s;
-      font-size: 1.1em;
-      letter-spacing: 1px;
+      font-size: 1.05em;
       border-radius: 6px 6px 0 0;
     }
+
     nav a.active, nav a:hover {
       color: var(--main-neon);
       border-bottom: 2.5px solid var(--main-neon);
     }
+
+    /* 🔘 Botones de tema */
+    .theme-buttons {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+      margin-right: 1em;
+    }
+
+    .theme-btn {
+      border: none;
+      border-radius: 50%;
+      padding: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      background: var(--main-neon);
+      color: #fff;
+    }
+    .theme-btn:hover {
+      transform: scale(1.2);
+    }
+
     #main-content {
       max-width: 900px;
       margin: 2em auto;
@@ -100,10 +148,12 @@
       min-height: 400px;
       transition: all 0.3s ease;
     }
+
     h1, h2 {
       color: var(--main-neon);
       margin-top: 0;
     }
+
     .welcome {
       font-size: 1.35em;
       margin-bottom: 2em;
@@ -111,6 +161,7 @@
       line-height: 1.5;
       color: var(--text-color);
     }
+
     .join-btn {
       display: inline-block;
       padding: 0.8em 2em;
@@ -130,45 +181,25 @@
       transform: scale(1.05);
       opacity: 0.9;
     }
-    .commands-block, .tokens-block {
-      margin-bottom: 2em;
-      background: var(--content-bg);
-      border-radius: 12px;
-      padding: 1.1em 1.3em;
-      font-family: monospace, monospace;
-      white-space: pre-line;
-      color: var(--text-color);
-      font-size: 1.03em;
-      overflow-x: auto;
-      box-shadow: 0 0 6px #0002;
+
+    /* 🔗 Botones extra */
+    .extra-links {
+      display: flex;
+      gap: 1em;
+      justify-content: center;
+      margin-top: 1.5em;
     }
-    .token-title {
-      color: var(--main-neon);
-      margin-bottom: 0.3em;
-      font-weight: bold;
-    }
-    .token-code {
-      background: #f1f1f1;
-      color: #000;
-      padding: 0.5em 1em;
-      border-radius: 12px;
-      font-size: 1.1em;
-      display: inline-block;
-      margin-bottom: 1.1em;
-      word-break: break-all;
-      font-family: 'Fira Mono', monospace;
-    }
-    .theme-toggle {
-      margin-left: auto;
-      margin-right: 1em;
-      padding: 0.6em 1em;
-      border-radius: 20px;
-      border: none;
+    .extra-links a {
+      padding: 0.6em 1.2em;
+      border-radius: 8px;
       background: var(--main-neon);
       color: #fff;
+      text-decoration: none;
       font-weight: bold;
-      cursor: pointer;
       transition: 0.2s;
+    }
+    .extra-links a:hover {
+      opacity: 0.85;
     }
   </style>
 </head>
@@ -185,17 +216,23 @@
       <a href="/commands" id="menu-commands">Comandos</a>
       <a href="/tokens" id="menu-tokens">Tokens</a>
     </div>
-    <button id="theme-toggle" class="theme-toggle">Modo Blanco</button>
+    <!-- 🔘 Botones de temas -->
+    <div class="theme-buttons">
+      <button class="theme-btn" data-theme="white" title="Modo Claro">☀️</button>
+      <button class="theme-btn" data-theme="dark" title="Modo Oscuro">🌙</button>
+      <button class="theme-btn" data-theme="blue" title="Modo Azul">💙</button>
+      <button class="theme-btn" data-theme="red" title="Modo Rojo">🔥</button>
+    </div>
   </nav>
 
   <div id="main-content"></div>
 
   <script>
-    // Datos
+    // 📌 Datos
     const commandsData = `> ✧⚞ 📚 ᴄᴏᴍᴀɴᴅᴏs: *466*`;
     const tokensList = Array.from({length:30},(_,i)=>`mak${i+1}`);
 
-    // Renderizado
+    // 📌 Renderizado
     function renderInicio() {
       return `
         <h1>Deymoon Club</h1>
@@ -206,6 +243,10 @@
           <a class="join-btn" href="https://whatsapp.com/channel/0029Vb5nxWWFHWq5CNFP5b21" target="_blank" rel="noopener">
             Unirme al Canal
           </a>
+        </div>
+        <div class="extra-links">
+          <a href="https://github.com/" target="_blank">🌐 GitHub</a>
+          <a href="https://t.me/" target="_blank">📢 Telegram</a>
         </div>
       `;
     }
@@ -221,7 +262,7 @@
         </div>`).join('');
     }
 
-    // Navegación
+    // 📌 Navegación
     function setActiveMenu(route){
       document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
       if(route==='/commands') document.getElementById('menu-commands').classList.add('active');
@@ -251,15 +292,19 @@
     }
     initialRoute();
 
-    // Toggle Tema
-    const themeBtn=document.getElementById("theme-toggle");
-    themeBtn.addEventListener("click",()=>{
-      document.documentElement.classList.toggle("white-theme");
-      if(document.documentElement.classList.contains("white-theme")){
-        themeBtn.textContent="Modo Rojo";
-      }else{
-        themeBtn.textContent="Modo Blanco";
-      }
+    // 📌 Cambiar Tema
+    const themeBtns=document.querySelectorAll(".theme-btn");
+    themeBtns.forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        document.documentElement.classList.remove("white-theme","blue-theme","red-theme");
+        if(btn.dataset.theme==="white"){
+          document.documentElement.classList.add("white-theme");
+        }else if(btn.dataset.theme==="blue"){
+          document.documentElement.classList.add("blue-theme");
+        }else if(btn.dataset.theme==="red"){
+          document.documentElement.classList.add("red-theme");
+        }
+      });
     });
   </script>
 </body>
