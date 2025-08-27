@@ -11,14 +11,16 @@
       --main-neon: #ff1744;
       --text-color: #fff;
       --menu-bg: #1a1a1a;
+      --content-bg: rgba(20, 2, 2, 0.93);
     }
-    /* Tema blanco */
+    /* 🌟 Tema blanco */
     :root.white-theme {
-      --main-bg: #f5f5f5;
+      --main-bg: #ffffff;
       --main-red: #333;
       --main-neon: #000;
       --text-color: #000;
-      --menu-bg: #fff;
+      --menu-bg: #f5f5f5;
+      --content-bg: #ffffff;
     }
     body {
       margin: 0;
@@ -26,6 +28,7 @@
       background: var(--main-bg);
       color: var(--text-color);
       min-height: 100vh;
+      transition: all 0.3s ease;
     }
     nav {
       background: var(--menu-bg);
@@ -33,7 +36,7 @@
       justify-content: flex-start;
       align-items: flex-start;
       padding: 0.5em 0 0.5em 0.7em;
-      box-shadow: 0 1px 12px #000a;
+      box-shadow: 0 1px 12px #0003;
       position: sticky;
       top: 0;
       z-index: 9;
@@ -53,9 +56,9 @@
       border-radius: 50%;
       object-fit: cover;
       border: 2.5px solid var(--main-neon);
-      box-shadow: 0 0 10px var(--main-neon), 0 0 22px #ff174470;
       margin-bottom: 0.23em;
-      background: #222;
+      background: #fff;
+      box-shadow: none;
     }
     .nav-brand-text {
       text-align: center;
@@ -63,7 +66,6 @@
       font-weight: bold;
       color: var(--text-color);
       line-height: 1.1;
-      text-shadow: 0 0 7px var(--main-neon), 0 0 12px #e53935a0;
       letter-spacing: 0.5px;
       margin-bottom: 0.15em;
     }
@@ -83,29 +85,23 @@
       font-size: 1.1em;
       letter-spacing: 1px;
       border-radius: 6px 6px 0 0;
-      margin: 0;
-      background: none;
-      outline: none;
     }
     nav a.active, nav a:hover {
       color: var(--main-neon);
       border-bottom: 2.5px solid var(--main-neon);
-      text-shadow: 0 0 5px var(--main-neon), 0 0 10px var(--main-neon);
-      background: #2222;
     }
     #main-content {
       max-width: 900px;
       margin: 2em auto;
       padding: 2em;
-      background: rgba(20, 2, 2, 0.93);
+      background: var(--content-bg);
       border-radius: 16px;
-      box-shadow: 0 0 16px 4px var(--main-red), 0 0 40px 6px #000c;
+      box-shadow: 0 0 16px 4px #0002;
       min-height: 400px;
-      position: relative;
+      transition: all 0.3s ease;
     }
     h1, h2 {
       color: var(--main-neon);
-      text-shadow: 0 0 8px var(--main-neon), 0 0 16px var(--main-neon);
       margin-top: 0;
     }
     .welcome {
@@ -114,63 +110,54 @@
       text-align: center;
       line-height: 1.5;
       color: var(--text-color);
-      text-shadow: 0 0 8px var(--main-neon), 0 0 12px #e53935a0;
     }
     .join-btn {
       display: inline-block;
       padding: 0.8em 2em;
       margin: 1.5em 0 2em 0;
-      background: linear-gradient(90deg, var(--main-neon), #ff5252, var(--main-red));
+      background: var(--main-neon);
       color: #fff;
       font-weight: bold;
       border: none;
       border-radius: 32px;
       font-size: 1.1em;
-      box-shadow: 0 0 16px 2px var(--main-neon);
       cursor: pointer;
-      transition: transform 0.13s, box-shadow 0.13s;
-      text-shadow: 0 0 7px #fff;
+      transition: 0.2s;
       text-decoration: none;
       letter-spacing: 1px;
     }
     .join-btn:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 28px 6px var(--main-neon);
-      background: linear-gradient(90deg, #ff1744, #e53935, #ff5252);
-      color: #fff;
+      opacity: 0.9;
     }
     .commands-block, .tokens-block {
       margin-bottom: 2em;
-      background: #160808e0;
+      background: var(--content-bg);
       border-radius: 12px;
-      box-shadow: 0 0 12px 2px #e5393530;
       padding: 1.1em 1.3em;
       font-family: monospace, monospace;
       white-space: pre-line;
-      color: #fff;
+      color: var(--text-color);
       font-size: 1.03em;
       overflow-x: auto;
+      box-shadow: 0 0 6px #0002;
     }
     .token-title {
       color: var(--main-neon);
       margin-bottom: 0.3em;
       font-weight: bold;
-      text-shadow: 0 0 8px var(--main-neon);
     }
     .token-code {
-      background: #181818;
-      color: #ff1744;
+      background: #f1f1f1;
+      color: #000;
       padding: 0.5em 1em;
       border-radius: 12px;
       font-size: 1.1em;
       display: inline-block;
       margin-bottom: 1.1em;
-      box-shadow: 0 0 8px 1px var(--main-neon) inset;
-      letter-spacing: 1.2px;
       word-break: break-all;
       font-family: 'Fira Mono', monospace;
     }
-    /* Botón de tema */
     .theme-toggle {
       margin-left: auto;
       margin-right: 1em;
@@ -181,12 +168,7 @@
       color: #fff;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 0 8px var(--main-neon);
       transition: 0.2s;
-    }
-    .theme-toggle:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 14px var(--main-neon);
     }
   </style>
 </head>
@@ -209,16 +191,11 @@
   <div id="main-content"></div>
 
   <script>
-    // SPA Rutas
-    const commandsData = `
-
-> ✧⚞ 📚 ᴄᴏᴍᴀɴᴅᴏs: *466*
-
-
-`;
-
+    // Datos
+    const commandsData = `> ✧⚞ 📚 ᴄᴏᴍᴀɴᴅᴏs: *466*`;
     const tokensList = Array.from({length:30},(_,i)=>`mak${i+1}`);
 
+    // Renderizado
     function renderInicio() {
       return `
         <h1>Deymoon Club</h1>
@@ -233,20 +210,18 @@
       `;
     }
     function renderCommands() {
-      return `
-        <h2>Comandos</h2>
-        <div class="commands-block">${commandsData.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>
-      `;
+      return `<h2>Comandos</h2>
+        <div class="commands-block">${commandsData}</div>`;
     }
     function renderTokens() {
       return tokensList.map((t,i)=>`
         <div class="tokens-block">
           <div class="token-title">TOKEN ${i+1}</div>
           <div class="token-code">${t}</div>
-        </div>
-      `).join('');
+        </div>`).join('');
     }
 
+    // Navegación
     function setActiveMenu(route){
       document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
       if(route==='/commands') document.getElementById('menu-commands').classList.add('active');
