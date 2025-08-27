@@ -227,10 +227,170 @@
 
   <div id="main-content"></div>
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Deymoon Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --main-bg: #111;
+      --main-red: #e53935;
+      --main-neon: #ff1744;
+      --text-color: #fff;
+      --menu-bg: #1a1a1a;
+      --content-bg: rgba(20, 2, 2, 0.93);
+    }
+    body { margin:0; font-family:'Segoe UI',Arial,sans-serif; background:var(--main-bg); color:var(--text-color); }
+    nav { background:var(--menu-bg); display:flex; padding:0.5em; gap:1em; }
+    nav a { color:var(--text-color); text-decoration:none; padding:0.6em 1em; border-radius:6px 6px 0 0; }
+    nav a.active,nav a:hover{color:var(--main-neon);border-bottom:2.5px solid var(--main-neon);}
+    #main-content{max-width:900px;margin:2em auto;padding:2em;background:var(--content-bg);border-radius:16px;}
+    h1,h2{color:var(--main-neon);}
+    .command-buttons{display:flex;gap:1em;justify-content:center;margin:1em 0;}
+    .command-buttons button{padding:0.6em 1.2em;border:none;border-radius:8px;background:var(--main-neon);color:#fff;font-weight:bold;cursor:pointer;}
+    .command-buttons button:hover{opacity:0.85;}
+    .commands-block{white-space:pre-wrap;background:#0002;padding:1em;border-radius:8px;margin-top:1em;}
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/inicio" id="menu-inicio" class="active">Inicio</a>
+    <a href="/commands" id="menu-commands">Comandos</a>
+    <a href="/tokens" id="menu-tokens">Tokens</a>
+  </nav>
+
+  <div id="main-content"></div>
+
   <script>
     // 📌 Datos
-    const commandsData = `> ✧⚞ 📚 ᴄᴏᴍᴀɴᴅᴏs: *466*`;
+    const infoData = `✮ ≽ܫ≼ - INFO - ✧˚ ⋆｡
+* .afk [alasan]
+* .menu
+* .uptime
+* .script
+* .staff
+* .creador
+* .grupos
+* .estado
+* .infobot
+* .sug
+* .ping
+* .reportar <txt>
+* .reglas
+* .speed
+* .sistema
+* .usuarios
+* .ds
+* .funciones
+* .editautoresponder`;
+
+    const menulistData = `✮ ≽ܫ≼ - MENULIST - ✧˚ ⋆｡
+* .menulist
+* .dev - MENU OWNER
+* .menusticker - MENU STICKERS
+* .menusearch - MENU SEARCH
+* .menudl - MENU DESCARGAS
+* .menulogos - LOGOS
+* .menunsfw - MENU 18
+* .menugp - MENU GRUPO
+* .menu2 - MENU AUDIOS
+* .menurpg - MENU RPG`;
+
+    const searchData = `✮ ≽ܫ≼ - SEARCH - ✧˚ ⋆｡
+* .animeinfo
+* .animesearch
+* .cuevana
+* .githubsearch
+* .searchhentai
+* .google <búsqueda>
+* .imagen <query>
+* .infoanime
+* .githubstalk <query>
+* .soundcloudsearch <txt>
+* .pinterest
+* .pornhubsearch
+* .spotifysearch <texto>
+* .ytsearch2 <texto>
+* .npmjs
+* .gnula
+* .apksearch
+* .wikis
+* .tiktoksearch <txt>
+* .tweetposts
+* .xnxxs
+* .xvsearch
+* .yts
+* .fdroidsearch <término>
+* .happymodsearch <búsqueda>
+* .cinecalidadsearch <búsqueda>
+* .yahoosearch <búsqueda>
+* .movie <término>`;
+
     const tokensList = Array.from({length:30},(_,i)=>`mak${i+1}`);
+
+    // 📌 Renderizado
+    function renderInicio() {
+      return `<h1>Deymoon Club</h1><p>Bienvenido al club.</p>`;
+    }
+
+    function renderCommands() {
+      return `<h2>Comandos</h2>
+        <div class="command-buttons">
+          <button onclick="showCommands('info')">Info</button>
+          <button onclick="showCommands('menulist')">Menulist</button>
+          <button onclick="showCommands('search')">Search</button>
+        </div>
+        <div id="commands-container">
+          <div class="commands-block" id="info-block">${infoData}</div>
+          <div class="commands-block" id="menulist-block" style="display:none;">${menulistData}</div>
+          <div class="commands-block" id="search-block" style="display:none;">${searchData}</div>
+        </div>`;
+    }
+
+    function renderTokens() {
+      return tokensList.map((t,i)=>`
+        <div class="commands-block">
+          <b>TOKEN ${i+1}:</b> ${t}
+        </div>`).join('');
+    }
+
+    // 📌 Mostrar comandos
+    function showCommands(type){
+      document.querySelectorAll('#commands-container .commands-block').forEach(el=>el.style.display='none');
+      document.getElementById(type+'-block').style.display='block';
+    }
+
+    // 📌 Navegación
+    function setActiveMenu(route){
+      document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
+      if(route==='/commands') document.getElementById('menu-commands').classList.add('active');
+      else if(route==='/tokens') document.getElementById('menu-tokens').classList.add('active');
+      else document.getElementById('menu-inicio').classList.add('active');
+    }
+    function renderRoute(route){
+      setActiveMenu(route);
+      let main=document.getElementById('main-content');
+      if(route==='/commands') main.innerHTML=renderCommands();
+      else if(route==='/tokens') main.innerHTML=renderTokens();
+      else main.innerHTML=renderInicio();
+    }
+    document.querySelectorAll('nav a').forEach(a=>{
+      a.addEventListener('click',function(e){
+        e.preventDefault();
+        const route=this.getAttribute('href');
+        window.history.pushState({route},'',route);
+        renderRoute(route);
+      });
+    });
+    window.addEventListener('popstate',()=>renderRoute(window.location.pathname));
+    function initialRoute(){
+      const r=window.location.pathname;
+      if(['/commands','/tokens','/inicio'].includes(r)) renderRoute(r);
+      else {window.history.replaceState({route:'/inicio'},'','/inicio');renderRoute('/inicio');}
+    }
+    initialRoute();
 
     // 📌 Renderizado
     function renderInicio() {
