@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Deymoon Club</title>
+  <title>Shadow.xyz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
@@ -50,6 +50,8 @@
       background: var(--main-bg);
       color: var(--text-color);
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
       transition: all 0.3s ease;
     }
 
@@ -147,6 +149,7 @@
       box-shadow: 0 0 16px 4px #0002;
       min-height: 400px;
       transition: all 0.3s ease;
+      flex: 1;
     }
 
     h1, h2 {
@@ -207,6 +210,21 @@
     .command-buttons button{padding:0.6em 1.2em;border:none;border-radius:8px;background:var(--main-neon);color:#fff;font-weight:bold;cursor:pointer;}
     .command-buttons button:hover{opacity:0.85;}
     .commands-block{white-space:pre-wrap;background:#0002;padding:1em;border-radius:8px;margin-top:1em;}
+
+    /* Footer */
+    footer {
+      background: var(--menu-bg);
+      color: var(--text-color);
+      text-align: center;
+      padding: 1em;
+      margin-top: 2em;
+      border-top: 2px solid var(--main-neon);
+    }
+    footer a {
+      color: var(--main-neon);
+      text-decoration: none;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -214,13 +232,13 @@
     <div class="nav-brand">
       <img src="https://files.catbox.moe/c2sewn.jpg" alt="Shadow.xyz">
       <div class="nav-brand-text">
-        Home<br>Deymoon Club
+        Home<br>Shadow.xyz
       </div>
     </div>
     <div class="menu-links">
       <a href="/inicio" id="menu-inicio" class="active">Inicio</a>
       <a href="/commands" id="menu-commands">Comandos</a>
-      <a href="/tokens" id="menu-tokens">Tokens</a>
+      <a href="/contacto" id="menu-contacto">Contacto</a>
     </div>
     <div class="theme-buttons">
       <button class="theme-btn" data-theme="white" title="Modo Claro">☀️</button>
@@ -231,6 +249,10 @@
   </nav>
 
   <div id="main-content"></div>
+
+  <footer>
+    © 2025 Shadow.xyz | Diseñado con ❤️ por <a href="https://github.com/Yuji-XDev" target="_blank">Yuji-XDev</a>
+  </footer>
 
   <script>
     // 📌 Datos
@@ -297,12 +319,10 @@
 * .yahoosearch <búsqueda>
 * .movie <término>`;
 
-    const tokensList = Array.from({length:30},(_,i)=>`mak${i+1}`);
-
     // 📌 Renderizado
     function renderInicio() {
       return `
-        <h1>Deymoon Club</h1>
+        <h1>Shadow.xyz</h1>
         <div class="welcome">
           ¡Hola! Bienvenido a <b>Shadow.xyz</b>, un club de bots especiales que te brindan la mejor estadía en tus grupos y más.
         </div>
@@ -337,11 +357,16 @@
         </div>`;
     }
 
-    function renderTokens() {
-      return tokensList.map((t,i)=>`
-        <div class="commands-block">
-          <b>TOKEN ${i+1}:</b> ${t}
-        </div>`).join('');
+    function renderContacto() {
+      return `
+        <h2>Contacto</h2>
+        <p>Si deseas comunicarte con nosotros, aquí tienes nuestras redes:</p>
+        <div class="extra-links">
+          <a href="blackoficial2025@gmail.com">📧 Email</a>
+          <a href="https://t.me/" target="_blank">📢 Telegram</a>
+          <a href="https://github.com/Yuji-XDev" target="_blank">🌐 GitHub</a>
+        </div>
+      `;
     }
 
     // 📌 Mostrar comandos
@@ -354,7 +379,7 @@
     function setActiveMenu(route){
       document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
       if(route==='/commands') document.getElementById('menu-commands').classList.add('active');
-      else if(route==='/tokens') document.getElementById('menu-tokens').classList.add('active');
+      else if(route==='/contacto') document.getElementById('menu-contacto').classList.add('active');
       else document.getElementById('menu-inicio').classList.add('active');
     }
 
@@ -362,7 +387,7 @@
       setActiveMenu(route);
       let main=document.getElementById('main-content');
       if(route==='/commands') main.innerHTML=renderCommands();
-      else if(route==='/tokens') main.innerHTML=renderTokens();
+      else if(route==='/contacto') main.innerHTML=renderContacto();
       else main.innerHTML=renderInicio();
     }
 
@@ -379,7 +404,7 @@
 
     function initialRoute(){
       const r=window.location.pathname;
-      if(['/commands','/tokens','/inicio'].includes(r)) renderRoute(r);
+      if(['/commands','/contacto','/inicio'].includes(r)) renderRoute(r);
       else {window.history.replaceState({route:'/inicio'},'','/inicio');renderRoute('/inicio');}
     }
     initialRoute();
