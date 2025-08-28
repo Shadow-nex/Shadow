@@ -201,6 +201,12 @@
     .extra-links a:hover {
       opacity: 0.85;
     }
+
+    /* Comandos */
+    .command-buttons{display:flex;gap:1em;justify-content:center;margin:1em 0;}
+    .command-buttons button{padding:0.6em 1.2em;border:none;border-radius:8px;background:var(--main-neon);color:#fff;font-weight:bold;cursor:pointer;}
+    .command-buttons button:hover{opacity:0.85;}
+    .commands-block{white-space:pre-wrap;background:#0002;padding:1em;border-radius:8px;margin-top:1em;}
   </style>
 </head>
 <body>
@@ -216,49 +222,12 @@
       <a href="/commands" id="menu-commands">Comandos</a>
       <a href="/tokens" id="menu-tokens">Tokens</a>
     </div>
-    <!-- 🔘 Botones de temas -->
     <div class="theme-buttons">
       <button class="theme-btn" data-theme="white" title="Modo Claro">☀️</button>
       <button class="theme-btn" data-theme="dark" title="Modo Oscuro">🌙</button>
       <button class="theme-btn" data-theme="blue" title="Modo Azul">💙</button>
       <button class="theme-btn" data-theme="red" title="Modo Rojo">🔥</button>
     </div>
-  </nav>
-
-  <div id="main-content"></div>
-
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Deymoon Club</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    :root {
-      --main-bg: #111;
-      --main-red: #e53935;
-      --main-neon: #ff1744;
-      --text-color: #fff;
-      --menu-bg: #1a1a1a;
-      --content-bg: rgba(20, 2, 2, 0.93);
-    }
-    body { margin:0; font-family:'Segoe UI',Arial,sans-serif; background:var(--main-bg); color:var(--text-color); }
-    nav { background:var(--menu-bg); display:flex; padding:0.5em; gap:1em; }
-    nav a { color:var(--text-color); text-decoration:none; padding:0.6em 1em; border-radius:6px 6px 0 0; }
-    nav a.active,nav a:hover{color:var(--main-neon);border-bottom:2.5px solid var(--main-neon);}
-    #main-content{max-width:900px;margin:2em auto;padding:2em;background:var(--content-bg);border-radius:16px;}
-    h1,h2{color:var(--main-neon);}
-    .command-buttons{display:flex;gap:1em;justify-content:center;margin:1em 0;}
-    .command-buttons button{padding:0.6em 1.2em;border:none;border-radius:8px;background:var(--main-neon);color:#fff;font-weight:bold;cursor:pointer;}
-    .command-buttons button:hover{opacity:0.85;}
-    .commands-block{white-space:pre-wrap;background:#0002;padding:1em;border-radius:8px;margin-top:1em;}
-  </style>
-</head>
-<body>
-  <nav>
-    <a href="/inicio" id="menu-inicio" class="active">Inicio</a>
-    <a href="/commands" id="menu-commands">Comandos</a>
-    <a href="/tokens" id="menu-tokens">Tokens</a>
   </nav>
 
   <div id="main-content"></div>
@@ -332,7 +301,21 @@
 
     // 📌 Renderizado
     function renderInicio() {
-      return `<h1>Deymoon Club</h1><p>Bienvenido al club.</p>`;
+      return `
+        <h1>Deymoon Club</h1>
+        <div class="welcome">
+          ¡Hola! Bienvenido a <b>Deymoon Club</b>, un club de bots especiales que te brindan la mejor estadía en tus grupos y más.
+        </div>
+        <div style="text-align:center;">
+          <a class="join-btn" href="https://whatsapp.com/channel/0029Vb5nxWWFHWq5CNFP5b21" target="_blank" rel="noopener">
+            Unirme al Canal
+          </a>
+        </div>
+        <div class="extra-links">
+          <a href="https://github.com/" target="_blank">🌐 GitHub</a>
+          <a href="https://t.me/" target="_blank">📢 Telegram</a>
+        </div>
+      `;
     }
 
     function renderCommands() {
@@ -369,6 +352,7 @@
       else if(route==='/tokens') document.getElementById('menu-tokens').classList.add('active');
       else document.getElementById('menu-inicio').classList.add('active');
     }
+
     function renderRoute(route){
       setActiveMenu(route);
       let main=document.getElementById('main-content');
@@ -376,6 +360,7 @@
       else if(route==='/tokens') main.innerHTML=renderTokens();
       else main.innerHTML=renderInicio();
     }
+
     document.querySelectorAll('nav a').forEach(a=>{
       a.addEventListener('click',function(e){
         e.preventDefault();
@@ -384,67 +369,9 @@
         renderRoute(route);
       });
     });
-    window.addEventListener('popstate',()=>renderRoute(window.location.pathname));
-    function initialRoute(){
-      const r=window.location.pathname;
-      if(['/commands','/tokens','/inicio'].includes(r)) renderRoute(r);
-      else {window.history.replaceState({route:'/inicio'},'','/inicio');renderRoute('/inicio');}
-    }
-    initialRoute();
 
-    // 📌 Renderizado
-    function renderInicio() {
-      return `
-        <h1>Deymoon Club</h1>
-        <div class="welcome">
-          ¡Hola! Bienvenido a <b>Deymoon Club</b>, un club de bots especiales que te brindan la mejor estadía en tus grupos y más.
-        </div>
-        <div style="text-align:center;">
-          <a class="join-btn" href="https://whatsapp.com/channel/0029Vb5nxWWFHWq5CNFP5b21" target="_blank" rel="noopener">
-            Unirme al Canal
-          </a>
-        </div>
-        <div class="extra-links">
-          <a href="https://github.com/" target="_blank">🌐 GitHub</a>
-          <a href="https://t.me/" target="_blank">📢 Telegram</a>
-        </div>
-      `;
-    }
-    function renderCommands() {
-      return `<h2>Comandos</h2>
-        <div class="commands-block">${commandsData}</div>`;
-    }
-    function renderTokens() {
-      return tokensList.map((t,i)=>`
-        <div class="tokens-block">
-          <div class="token-title">TOKEN ${i+1}</div>
-          <div class="token-code">${t}</div>
-        </div>`).join('');
-    }
-
-    // 📌 Navegación
-    function setActiveMenu(route){
-      document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
-      if(route==='/commands') document.getElementById('menu-commands').classList.add('active');
-      else if(route==='/tokens') document.getElementById('menu-tokens').classList.add('active');
-      else document.getElementById('menu-inicio').classList.add('active');
-    }
-    function renderRoute(route){
-      setActiveMenu(route);
-      let main=document.getElementById('main-content');
-      if(route==='/commands') main.innerHTML=renderCommands();
-      else if(route==='/tokens') main.innerHTML=renderTokens();
-      else main.innerHTML=renderInicio();
-    }
-    document.querySelectorAll('nav a').forEach(a=>{
-      a.addEventListener('click',function(e){
-        e.preventDefault();
-        const route=this.getAttribute('href');
-        window.history.pushState({route},'',route);
-        renderRoute(route);
-      });
-    });
     window.addEventListener('popstate',()=>renderRoute(window.location.pathname));
+
     function initialRoute(){
       const r=window.location.pathname;
       if(['/commands','/tokens','/inicio'].includes(r)) renderRoute(r);
@@ -457,13 +384,9 @@
     themeBtns.forEach(btn=>{
       btn.addEventListener("click",()=>{
         document.documentElement.classList.remove("white-theme","blue-theme","red-theme");
-        if(btn.dataset.theme==="white"){
-          document.documentElement.classList.add("white-theme");
-        }else if(btn.dataset.theme==="blue"){
-          document.documentElement.classList.add("blue-theme");
-        }else if(btn.dataset.theme==="red"){
-          document.documentElement.classList.add("red-theme");
-        }
+        if(btn.dataset.theme==="white") document.documentElement.classList.add("white-theme");
+        else if(btn.dataset.theme==="blue") document.documentElement.classList.add("blue-theme");
+        else if(btn.dataset.theme==="red") document.documentElement.classList.add("red-theme");
       });
     });
   </script>
