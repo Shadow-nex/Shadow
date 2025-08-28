@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rin Itoshi MD - Shadow.xyz</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+<style>
+  :root {
+    --bg: #111;
+    --primary: #e53935;
+    --accent: #ff1744;
+    --text: #eee;
+    --card-bg: rgba(20,20,20,0.85);
+    --neon: #ff1744;
+  }
+
+  * { margin:0; padding:0; box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
+
+  body {
+    background: linear-gradient(-45deg, #111, #1a1a1a, #111, #1a1a1a);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  @keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+  }
+
+  header {
+    text-align: center; padding: 4rem 1rem 2rem;
+  }
+  header h1 {
+    font-size: 3rem; color: var(--neon);
+    text-shadow: 0 0 10px var(--neon), 0 0 20px var(--neon), 0 0 30px var(--neon);
+    animation: flicker 2s infinite;
+  }
+  header p {
+    font-size: 1.2rem; color: #ccc; text-shadow: 0 0 5px var(--neon);
+  }
+
+  @keyframes flicker {
+    0%,19%,21%,23%,25%,54%,56%,100% {opacity:1;}
+    20%,22%,24%,55% {opacity:0.4;}
+  }
+
+  section { max-width: 1000px; margin: 3rem auto; padding: 0 1rem; }
+
+  h2 {
+    color: var(--neon);
+    text-shadow: 0 0 5px var(--neon), 0 0 10px var(--neon);
+    border-bottom: 2px solid var(--neon);
+    padding-bottom: 0.5rem; margin-bottom: 1rem;
+  }
+
+  .bio { font-size: 1rem; line-height: 1.6; color: #ccc; }
+
+  .skills, .projects, .stats { display: flex; flex-wrap: wrap; gap: 2rem; }
+
+  .card {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    flex: 1 1 300px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px var(--neon);
+    transition: transform 0.4s, box-shadow 0.4s;
+    backdrop-filter: blur(5px);
+  }
+
+  .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 25px var(--neon), 0 0 50px var(--neon);
+  }
+
+  .card h3 { color: var(--neon); margin-bottom: 0.5rem; }
+  .card p { color: #ccc; }
+
+  .projects img { width: 100%; border-radius: 12px; margin-bottom: 0.5rem; transition: transform 0.3s, box-shadow 0.3s; }
+  .projects img:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--neon); }
+
+  .social-links { text-align: center; margin-top: 1rem; }
+  .social-links a {
+    display: inline-block;
+    margin: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border: 2px solid var(--neon);
+    border-radius: 10px;
+    color: var(--text);
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s;
+  }
+  .social-links a:hover {
+    background: var(--neon);
+    color: var(--bg);
+    box-shadow: 0 0 10px var(--neon), 0 0 20px var(--neon);
+    transform: scale(1.1);
+    text-shadow: 0 0 5px #fff, 0 0 10px var(--neon);
+  }
+  .social-links a i { margin-right: 0.5rem; }
+
+  .stats { justify-content: space-around; text-align: center; margin-top: 1rem; }
+  .stat { flex: 1 1 150px; padding: 1rem; }
+  .stat h3 { font-size: 2rem; color: var(--neon); text-shadow: 0 0 10px var(--neon); }
+  .stat p { color: #ccc; }
+
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    border-top: 2px solid var(--neon);
+    color: #888;
+    font-size: 0.9rem;
+  }
+
+  /* Animaciones adicionales */
+  .fadeIn { opacity:0; transform: translateY(20px); animation: fadeIn 1s forwards; }
+  .fadeIn.delay1 { animation-delay: 0.3s; }
+  .fadeIn.delay2 { animation-delay: 0.6s; }
+  .fadeIn.delay3 { animation-delay: 0.9s; }
+
+  @keyframes fadeIn {
+    to { opacity:1; transform: translateY(0); }
+  }
+
+</style>
+</head>
+<body>
+
+<header class="fadeIn">
+  <h1>Rin Itoshi MD</h1>
+  <p>Proyecto: <strong>Shadow.xyz</strong></p>
+</header>
+
+<section class="fadeIn delay1">
+  <h2>Sobre mí</h2>
+  <p class="bio">
+    Soy Rin Itoshi MD, creador de <strong>Shadow.xyz</strong>. Especialista en desarrollo de bots para WhatsApp, automatización y herramientas digitales innovadoras. Optimizo procesos, ofrezco soluciones rápidas y seguras, siempre a la vanguardia tecnológica.
+  </p>
+</section>
+
+<section class="fadeIn delay2">
+  <h2>Habilidades</h2>
+  <div class="skills">
+    <div class="card">
+      <h3><i class="fas fa-code"></i> Desarrollo Web</h3>
+      <p>HTML, CSS, JavaScript, Node.js y APIs para bots y sistemas interactivos.</p>
+    </div>
+    <div class="card">
+      <h3><i class="fas fa-robot"></i> Automatización</h3>
+      <p>Creación y gestión de bots, integración con WhatsApp y redes sociales.</p>
+    </div>
+    <div class="card">
+      <h3><i class="fas fa-project-diagram"></i> Proyectos</h3>
+      <p>Shadow.xyz, hosting para bots, dashboards personalizados y control de usuarios.</p>
+    </div>
+  </div>
+</section>
+
+<section class="fadeIn delay3">
+  <h2>Proyectos Destacados</h2>
+  <div class="projects">
+    <div class="card">
+      <img src="https://via.placeholder.com/400x200?text=Shadow.xyz" alt="Proyecto Shadow.xyz">
+      <h3>Shadow.xyz</h3>
+      <p>Plataforma avanzada para crear, administrar y ejecutar bots de WhatsApp con hosting propio y control total.</p>
+    </div>
+    <div class="card">
+      <img src="https://via.placeholder.com/400x200?text=Subbots" alt="Subbots">
+      <h3>Subbots</h3>
+      <p>Sistema de gestión de subbots con códigos QR y panel de control, ideal para automatizar tareas y comandos personalizados.</p>
+    </div>
+  </div>
+</section>
+
+<section class="fadeIn delay1">
+  <h2>Redes y Contacto</h2>
+  <div class="social-links">
+    <a href="https://www.tiktok.com/@shadowxyz" target="_blank"><i class="fab fa-tiktok"></i>TikTok</a>
+    <a href="https://www.instagram.com/shadowxyz" target="_blank"><i class="fab fa-instagram"></i>Instagram</a>
+    <a href="https://wa.me/tu-numero" target="_blank"><i class="fab fa-whatsapp"></i>WhatsApp</a>
+    <a href="https://shadow.xyz" target="_blank"><i class="fas fa-globe"></i>Web</a>
+  </div>
+</section>
+
+<section class="fadeIn delay2">
+  <h2>Logros y Estadísticas</h2>
+  <div class="stats">
+    <div class="stat">
+      <h3>50+</h3>
+      <p>Bots creados</p>
+    </div>
+    <div class="stat">
+      <h3>10K+</h3>
+      <p>Usuarios activos</p>
+    </div>
+    <div class="stat">
+      <h3>5+</h3>
+      <p>Años de experiencia</p>
+    </div>
+  </div>
+</section>
+
+<footer class="fadeIn delay3">
+  © 2025 Rin Itoshi MD | Shadow.xyz
+</footer>
+
+</body>
+</html>
