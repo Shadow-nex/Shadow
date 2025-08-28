@@ -357,17 +357,114 @@
         </div>`;
     }
 
-    function renderContacto() {
-      return `
-        <h2>Contacto</h2>
-        <p>Si deseas comunicarte con nosotros, aquí tienes nuestras redes:</p>
-        <div class="extra-links">
-          <a href="blackoficial2025@gmail.com">📧 Email</a>
-          <a href="https://t.me/" target="_blank">📢 Telegram</a>
-          <a href="https://github.com/Yuji-XDev" target="_blank">🌐 GitHub</a>
-        </div>
-      `;
-    }
+    <style>
+  .contact-card {
+    background: #111;
+    padding: 25px;
+    border-radius: 15px;
+    margin: 20px auto;
+    max-width: 600px;
+    text-align: center;
+    border: 2px solid #ff1744;
+    box-shadow: 0 0 12px #ff1744, 0 0 25px rgba(255,23,68,0.6);
+    animation: neon-border 2s infinite alternate;
+  }
+
+  @keyframes neon-border {
+    0% { box-shadow: 0 0 10px #ff1744, 0 0 20px rgba(255,23,68,0.6); }
+    100% { box-shadow: 0 0 20px #ff1744, 0 0 40px rgba(255,23,68,0.9); }
+  }
+
+  /* 🔥 Título animado neón */
+  .contact-card h2 {
+    font-size: 26px;
+    margin-bottom: 10px;
+    color: #ff1744;
+    text-shadow: 0 0 5px #ff1744, 0 0 10px #ff1744, 0 0 20px #ff1744;
+    animation: neon-title 1.8s infinite alternate;
+  }
+
+  @keyframes neon-title {
+    0% { text-shadow: 0 0 5px #ff1744, 0 0 10px #ff1744, 0 0 20px #ff1744; opacity: 1; }
+    50% { text-shadow: 0 0 10px #ff1744, 0 0 25px #ff1744, 0 0 45px #ff1744; opacity: 0.85; }
+    100% { text-shadow: 0 0 3px #ff1744, 0 0 6px #ff1744, 0 0 12px #ff1744; opacity: 1; }
+  }
+
+  .contact-card p {
+    color: #ccc;
+    margin-bottom: 20px;
+    font-size: 16px;
+  }
+
+  .extra-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .extra-links a {
+    background: #111;
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  /* 🎨 Botones multicolor con glow */
+  .extra-links a.email { border: 2px solid #ff9800; box-shadow: 0 0 8px #ff9800; text-shadow: 0 0 6px #ff9800; }
+  .extra-links a.email:hover { background: #ff9800; }
+
+  .extra-links a.whatsapp { border: 2px solid #25D366; box-shadow: 0 0 8px #25D366; text-shadow: 0 0 6px #25D366; }
+  .extra-links a.whatsapp:hover { background: #25D366; }
+
+  .extra-links a.telegram { border: 2px solid #0088cc; box-shadow: 0 0 8px #0088cc; text-shadow: 0 0 6px #0088cc; }
+  .extra-links a.telegram:hover { background: #0088cc; }
+
+  .extra-links a.tiktok { border: 2px solid #ff0050; box-shadow: 0 0 8px #ff0050; text-shadow: 0 0 6px #ff0050; }
+  .extra-links a.tiktok:hover { background: #ff0050; }
+
+  .extra-links a.instagram { border: 2px solid #e1306c; box-shadow: 0 0 8px #e1306c; text-shadow: 0 0 6px #e1306c; }
+  .extra-links a.instagram:hover { background: #e1306c; }
+
+  .extra-links a.paypal { border: 2px solid #003087; box-shadow: 0 0 8px #003087; text-shadow: 0 0 6px #003087; }
+  .extra-links a.paypal:hover { background: #003087; }
+
+  .extra-links a.facebook { border: 2px solid #1877f2; box-shadow: 0 0 8px #1877f2; text-shadow: 0 0 6px #1877f2; }
+  .extra-links a.facebook:hover { background: #1877f2; }
+
+  .extra-links a.youtube { border: 2px solid #ff0000; box-shadow: 0 0 8px #ff0000; text-shadow: 0 0 6px #ff0000; }
+  .extra-links a.youtube:hover { background: #ff0000; }
+
+  .extra-links a.github { border: 2px solid #fff; box-shadow: 0 0 8px #fff; text-shadow: 0 0 6px #fff; }
+  .extra-links a.github:hover { background: #fff; color: #000; }
+</style>
+
+<script>
+function renderContacto() {
+  return `
+    <div class="contact-card">
+      <h2>✨ Contacto ✨</h2>
+      <p>Si deseas comunicarte con nosotros, aquí tienes nuestras redes:</p>
+      <div class="extra-links">
+        <a class="email" href="mailto:blackoficial2025@gmail.com" target="_blank">📧 Email</a>
+        <a class="whatsapp" href="https://wa.me/51919199620" target="_blank">📱 WhatsApp</a>
+        <a class="telegram" href="https://t.me/51919199620" target="_blank">📢 Telegram</a>
+        <a class="tiktok" href="tiktok.com/@dev.shadowcore" target="_blank">🎵 TikTok</a>
+        <a class="instagram" href="https://www.instagram.com/TU_USUARIO" target="_blank">📸 Instagram</a>
+        <a class="paypal" href="https://www.paypal.me/TU_USUARIO" target="_blank">💸 PayPal</a>
+        <a class="facebook" href="https://www.facebook.com/TU_USUARIO" target="_blank">📘 Facebook</a>
+        <a class="youtube" href="https://youtube.com/@florencioacaro?si=mH3vvsmLa0mYQ_YV" target="_blank">▶️ YouTube</a>
+        <a class="github" href="https://github.com/Yuji-XDev" target="_blank">🌐 GitHub</a>
+      </div>
+    </div>
+  `;
+}
+</script>
 
     // 📌 Mostrar comandos
     function showCommands(type){
