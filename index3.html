@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>API YouTube MP3 - Shadow.xyz</title>
+  <title>API Delirius - Descarga MP3</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -15,10 +15,7 @@
       padding: 2em;
       min-height: 100vh;
     }
-    h1 {
-      color: #ff1744;
-      margin-bottom: 1em;
-    }
+    h1 { color: #ff1744; margin-bottom: 1em; text-align:center; }
     input, button {
       padding: 0.8em 1em;
       margin: 0.5em;
@@ -34,69 +31,69 @@
       transition: 0.2s;
     }
     button:hover { transform: scale(1.05); opacity: 0.9; }
-    #result { margin-top: 2em; text-align: center; }
-    .download-btn {
-      display: inline-block;
-      margin-top: 1em;
-      padding: 0.8em 2em;
-      background: #00bcd4;
-      color: #fff;
-      border-radius: 32px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.2s;
+    pre { 
+      background: #222; 
+      padding: 1em; 
+      border-radius: 8px; 
+      margin-top: 1em; 
+      text-align: left;
+      max-width: 600px;
+      overflow-x: auto;
     }
-    .download-btn:hover { transform: scale(1.05); opacity: 0.9; }
-    .error { color: #f44336; margin-top: 1em; }
   </style>
 </head>
 <body>
-  <h1>API YouTube → MP3</h1>
+  <h1>API Delirius - Descarga MP3</h1>
   <input type="text" id="yt-link" placeholder="Pega el enlace de YouTube">
-  <button id="download-btn">Obtener MP3</button>
-  <div id="result"></div>
+  <button id="get-json-btn">Obtener JSON</button>
+
+  <pre id="result"></pre>
 
   <script>
-    const downloadBtn = document.getElementById('download-btn');
+    const getBtn = document.getElementById('get-json-btn');
     const resultDiv = document.getElementById('result');
 
-    downloadBtn.addEventListener('click', async () => {
+    getBtn.addEventListener('click', () => {
       const link = document.getElementById('yt-link').value.trim();
       if(!link){
-        resultDiv.innerHTML = '<div class="error">❌ Ingresa un enlace válido de YouTube</div>';
+        resultDiv.textContent = "❌ Ingresa un enlace válido de YouTube";
         return;
       }
 
-      resultDiv.innerHTML = '⏳ Procesando...';
+      // Simulación de respuesta dinámica para cualquier link
+      const videoId = link.split("v=")[1] || "TdrL3QxjyVw"; // ejemplo simple
+      const fakeTitle = "Canción de YouTube - Demo";
+      const fakeAuthor = "Artista XYZ";
+      const fakeUrl = `https://da.gd/${videoId}`;
 
-      try {
-        // 🔑 Tu API Key
-        const apiKey = 'shadow'; 
-        // 🔗 URL de la API de ejemplo (reemplaza con tu API real)
-        const apiUrl = `https://api.shadow.xyz/ytmp3?key=${apiKey}&url=${encodeURIComponent(link)}`;
-
-        // Fetch a la API
-        const res = await fetch(apiUrl);
-        const data = await res.json();
-
-        if(data.success && data.link){
-          // Muestra botón de descarga
-          resultDiv.innerHTML = `
-            <div>✅ MP3 listo: ${data.title}</div>
-            <a class="download-btn" href="${data.link}" target="_blank" download>Descargar MP3</a>
-            <pre style="text-align:left; margin-top:1em; background:#222; padding:1em; border-radius:8px;">
-JSON de respuesta:
-${JSON.stringify(data, null, 2)}
-            </pre>
-          `;
-        } else {
-          resultDiv.innerHTML = '<div class="error">❌ Error al obtener el MP3</div>';
+      const apiResponse = {
+        "creator": "Delirius (神志不清)",
+        "status": true,
+        "data": {
+          "title": fakeTitle,
+          "id": videoId,
+          "author": fakeAuthor,
+          "image": `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+          "image_max_resolution": `https://i.ytimg.com/vi_webp/${videoId}/maxresdefault.webp`,
+          "private": false,
+          "views": "N/A",
+          "likes": "N/A",
+          "comments": "N/A",
+          "category": "Music",
+          "duration": 0,
+          "download": {
+            "filename": `${fakeTitle}.mp3`,
+            "quality": "128kbps",
+            "size": "N/A",
+            "bytes_size": 0,
+            "extension": "mp3",
+            "url": fakeUrl
+          }
         }
+      };
 
-      } catch(e){
-        console.error(e);
-        resultDiv.innerHTML = '<div class="error">❌ Error de conexión con la API</div>';
-      }
+      // Mostrar JSON
+      resultDiv.textContent = JSON.stringify(apiResponse, null, 2);
     });
   </script>
 </body>
