@@ -1,0 +1,4 @@
+PORT=3000
+BOT_NAME=RinItoshi
+SESSION_FILE=auth_info.json
+HOSTNAME=0.0.0.0
