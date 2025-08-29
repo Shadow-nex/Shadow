@@ -93,7 +93,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    a, .downloadDirect {
+    a {
       display: inline-block;
       margin-top: 20px;
       padding: 14px 24px;
@@ -104,20 +104,10 @@
       font-weight: bold;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       transition: transform 0.2s ease, box-shadow 0.3s ease;
-      cursor: pointer;
     }
-    a:hover, .downloadDirect:hover {
+    a:hover {
       transform: translateY(-3px);
       box-shadow: 0 6px 15px rgba(50,205,50,0.5);
-    }
-
-    footer {
-      margin-top: auto;
-      padding: 20px;
-      font-size: 0.9rem;
-      color: #fff;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-      animation: fadeInUp 1.2s ease;
     }
 
     /* Animaciones kawaii */
@@ -143,16 +133,10 @@
     <h2>✅ Video listo, Onichan~ 💕</h2>
     <video id="preview" controls></video>
     <br>
-    <button class="downloadDirect" onclick="directDownload()">⬇ Descargar ahora</button>
+    <a id="downloadBtn" target="_blank">⬇ Descargar ahora</a>
   </div>
 
-  <footer>
-    🌺 Creado con amor por <b>Rin Itoshi</b> | © 2025  
-  </footer>
-
   <script>
-    let videoURL = "";
-
     async function downloadVideo() {
       const url = document.getElementById('tiktokUrl').value.trim();
       if (!url) {
@@ -170,34 +154,17 @@
           return;
         }
 
-        videoURL = data.data.play;
+        const videoURL = data.data.play;
         const resultDiv = document.getElementById('result');
         const preview = document.getElementById('preview');
+        const downloadBtn = document.getElementById('downloadBtn');
 
         preview.src = videoURL;
+        downloadBtn.href = videoURL;
+        downloadBtn.download = "tiktok.mp4";
         resultDiv.style.display = "block";
       } catch (error) {
         alert("❌ Error: " + error.message);
-      }
-    }
-
-    async function directDownload() {
-      if (!videoURL) return;
-      try {
-        const response = await fetch(videoURL);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "tiktok.mp4";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-
-        window.URL.revokeObjectURL(url);
-      } catch (err) {
-        alert("❌ Error en la descarga directa: " + err.message);
       }
     }
   </script>
