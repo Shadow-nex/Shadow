@@ -5,97 +5,252 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TikTok Downloader | Rin Itoshi</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #ffb6c1, #ffe4e1);
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
       color: #333;
       text-align: center;
-      padding: 30px;
+      padding: 40px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
+
     h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
       color: #ff1493;
-      font-size: 28px;
+      text-shadow: 2px 2px #fff;
+      animation: fadeInDown 1s ease;
     }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      color: #444;
+    }
+
     input {
-      padding: 10px;
-      width: 60%;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-top: 20px;
-    }
-    button {
-      padding: 12px 24px;
+      width: 90%;
+      max-width: 500px;
+      padding: 14px;
+      margin: 15px 0;
       border: none;
-      border-radius: 8px;
-      margin-top: 20px;
+      outline: none;
+      border-radius: 25px;
       font-size: 16px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    input:focus {
+      transform: scale(1.05);
+      box-shadow: 0 4px 18px rgba(255,20,147,0.4);
+    }
+
+    button {
+      padding: 14px 30px;
+      background: linear-gradient(45deg, #ff1493, #ff69b4);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
     }
-    #getVideoBtn {
-      background: #ff1493;
-      color: white;
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(255,20,147,0.5);
     }
-    #downloadBtn {
-      background: green;
-      color: white;
-      display: none;
+
+    .result {
+      margin-top: 40px;
+      padding: 25px;
+      border-radius: 15px;
+      background: #fff;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      animation: fadeInUp 1s ease;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
     }
+
     video {
       margin-top: 20px;
-      width: 320px;
-      border-radius: 10px;
+      width: 100%;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    a, .downloadDirect {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 14px 24px;
+      background: linear-gradient(45deg, #32cd32, #00b894);
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    a:hover, .downloadDirect:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(50,205,50,0.5);
+    }
+
+    /* Estado de carga del botón */
+    .downloadDirect.loading {
+      pointer-events: none;
+      opacity: 0.85;
+      background: linear-gradient(270deg, #ff69b4, #32cd32, #a6c1ee);
+      background-size: 600% 600%;
+      animation: gradientFlow 4s ease infinite, pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Loader spinner kawaii */
+    .loader {
+      width: 18px;
+      height: 18px;
+      display: inline-block;
+      margin-left: 8px;
+      vertical-align: middle;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top: 3px solid #ff69b4;  /* Rosa */
+      border-right: 3px solid #32cd32; /* Verde */
+      border-bottom: 3px solid #a6c1ee; /* Azul pastel */
+      animation: spin 0.8s linear infinite;
+      box-shadow: 0 0 8px rgba(255,105,180,0.6), 
+                  0 0 8px rgba(50,205,50,0.4);
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #fff;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+      animation: fadeInUp 1.2s ease;
+    }
+
+    /* Animaciones kawaii */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
   <h1>🌸 TikTok Downloader 🌸</h1>
-  <input type="text" id="tiktokUrl" placeholder="Pega el link de TikTok aquí">
+  <p>Descarga tus videos de TikTok sin marca de agua ✨</p>
+
+  <input type="text" id="tiktokUrl" placeholder="Pega tu link de TikTok aquí...">
   <br>
-  <button id="getVideoBtn">Obtener Video</button>
-  <br>
-  <video id="preview" controls style="display:none;"></video>
-  <br>
-  <a id="downloadLink" href="" download="tiktok.mp4">
-    <button id="downloadBtn">⬇️ Descargar</button>
-  </a>
+  <button onclick="downloadVideo()">💖 Descargar</button>
+  
+  <div id="result" class="result" style="display:none;">
+    <h2>✅ Video listo, Onichan~ 💕</h2>
+    <video id="preview" controls></video>
+    <br>
+    <a id="downloadBtn" class="downloadDirect">⬇ Descargar ahora</a>
+  </div>
+
+  <footer>
+    🌺 Creado con amor por <b>Rin Itoshi</b> | © 2025  
+  </footer>
 
   <script>
-    document.getElementById("getVideoBtn").addEventListener("click", async () => {
-      const url = document.getElementById("tiktokUrl").value;
+    let videoURL = "";
+    let loadingInterval;
+
+    async function downloadVideo() {
+      const url = document.getElementById('tiktokUrl').value.trim();
       if (!url) {
-        alert("Por favor, pega un enlace de TikTok.");
+        alert("🌸 Por favor, pega un enlace de TikTok uwu 💖");
         return;
       }
 
       try {
-        // Aquí puedes cambiar por tu API que devuelve el link directo del video
-        const apiUrl = `https://api.dorratz.com/fbvideo?url=${url}`; // ejemplo
+        const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(url)}&hd=1`;
         const res = await fetch(apiUrl);
         const data = await res.json();
 
-        // ⚠️ Ajusta según cómo tu API devuelva el link
-        const videoUrl = data.video || data.url || data.result;
-
-        if (!videoUrl) {
-          alert("No se pudo obtener el video.");
+        if (!data || !data.data || !data.data.play) {
+          alert("❌ No se pudo obtener el video onichan 😿");
           return;
         }
 
-        // Mostrar preview
-        const preview = document.getElementById("preview");
-        preview.src = videoUrl;
-        preview.style.display = "block";
+        videoURL = data.data.play;
+        const resultDiv = document.getElementById('result');
+        const preview = document.getElementById('preview');
+        const downloadBtn = document.getElementById('downloadBtn');
 
-        // Activar botón descargar
-        const downloadLink = document.getElementById("downloadLink");
-        downloadLink.href = videoUrl;
-        document.getElementById("downloadBtn").style.display = "inline-block";
+        preview.src = videoURL;
+        downloadBtn.href = videoURL;
+        downloadBtn.setAttribute("download", "tiktok.mp4"); 
+        downloadBtn.setAttribute("target", "_blank");
 
-      } catch (e) {
-        console.error(e);
-        alert("Error al obtener el video.");
+        // Evento al dar click en el botón
+        downloadBtn.onclick = () => {
+          let dots = "";
+          downloadBtn.classList.add("loading");
+
+          // Agregar loader + puntitos animados
+          downloadBtn.innerHTML = `⬇ Descargando<span id="dots"></span><span class="loader"></span>`;
+
+          const dotsSpan = document.getElementById("dots");
+          loadingInterval = setInterval(() => {
+            dots = dots.length < 3 ? dots + "." : "";
+            dotsSpan.textContent = dots;
+          }, 500);
+
+          // Detener animación y volver al texto normal
+          setTimeout(() => {
+            clearInterval(loadingInterval);
+            downloadBtn.classList.remove("loading");
+            downloadBtn.innerHTML = "⬇ Descargar ahora";
+          }, 4000);
+        };
+
+        resultDiv.style.display = "block";
+      } catch (error) {
+        alert("❌ Error: " + error.message);
       }
-    });
+    }
   </script>
 </body>
 </html>
