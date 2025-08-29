@@ -1,0 +1,3 @@
+API_KEY=tu_api_key_super_secreta
+PORT=3000
+SESSION_FILE=session.json
