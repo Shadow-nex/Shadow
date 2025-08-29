@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Estadísticas GitHub — Rueda Cargando</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --muted:#9aa4b2;
+      --accent:#4f46e5;
+      --glass: rgba(255,255,255,0.03);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      background: linear-gradient(180deg,var(--bg) 0%, #07101a 100%);
+      color:#e6eef6;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:980px;
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:20px;
+      align-items:start;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;
+      padding:18px;
+      box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    header h1{
+      margin:0 0 6px 0;
+      font-size:20px;
+    }
+    header p{margin:0;color:var(--muted);font-size:13px}
+
+    /* Spinner (rueda) */
+    .spinner-wrap{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin:14px 0 18px 0;
+    }
+
+    .wheel{
+      width:78px;
+      height:78px;
+      border-radius:50%;
+      position:relative;
+      display:inline-block;
+      background: conic-gradient(from 0deg, rgba(255,255,255,0.06) 0deg, rgba(255,255,255,0.18) 40deg, rgba(255,255,255,0.06) 80deg);
+      animation: spin 1.15s linear infinite;
+      box-shadow: inset 0 0 18px rgba(0,0,0,0.6), 0 6px 20px rgba(0,0,0,0.6);
+      border:6px solid rgba(255,255,255,0.02);
+    }
+    .wheel::after{
+      content:"";
+      position:absolute;
+      inset:18%;
+      border-radius:50%;
+      background: radial-gradient(circle at 40% 30%, rgba(255,255,255,0.02), transparent 20%), rgba(3,7,18,0.6);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+    @keyframes spin{
+      from{transform:rotate(0deg)}
+      to{transform:rotate(360deg)}
+    }
+
+    .status{
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    .repo-grid{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .avatar{
+      width:72px;
+      height:72px;
+      border-radius:12px;
+      background:var(--glass);
+      overflow:hidden;
+      flex-shrink:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+
+    .repo-info h2{
+      margin:0;font-size:16px;
+    }
+    .repo-info p{margin:6px 0 0 0;color:var(--muted);font-size:13px}
+
+    .stats{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+    .stat{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding:8px 10px;border-radius:10px;font-size:13px;color:var(--muted);
+      display:flex;gap:8px;align-items:center;border:1px solid rgba(255,255,255,0.02);
+    }
+    .stat b{color: #e6eef6;font-weight:600}
+
+    /* Right column: input */
+    .right{
+      position:sticky; top:18px;
+      height:fit-content;
+    }
+    label{font-size:13px;color:var(--muted);display:block;margin-bottom:8px}
+    input[type="text"]{
+      width:100%;
+      padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
+      background:transparent;color:inherit;font-size:14px;
+    }
+    .btn{
+      margin-top:10px;padding:10px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent), #7c3aed);
+      color:white;font-weight:600;cursor:pointer;width:100%;
+      box-shadow: 0 6px 18px rgba(79,70,229,0.12);
+    }
+    .small{
+      font-size:12px;color:var(--muted);margin-top:10px;
+    }
+    .link{
+      text-decoration:none;color:var(--accent);font-weight:600;
+    }
+
+    footer{margin-top:12px;color:var(--muted);font-size:13px}
+    .error{color:#ff6b6b;font-weight:600;margin-top:8px;font-size:13px}
+    @media (max-width:900px){
+      .wrap{grid-template-columns: 1fr; padding:0}
+      .right{position:static}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <header>
+        <h1>Estadísticas de GitHub</h1>
+        <p>Mostrando datos en tiempo real del repositorio y posibilidad de cargar el tuyo.</p>
+      </header>
+
+      <div class="spinner-wrap" id="loadingPanel">
+        <div class="wheel" id="wheel"></div>
+        <div>
+          <div class="status" id="loadingText">Conectando a GitHub…</div>
+          <div style="margin-top:8px;color:var(--muted);font-size:13px">Cargando estadísticas y miniaturas.</div>
+        </div>
+      </div>
+
+      <section id="reposContainer" style="opacity:0;transition:opacity .25s ease">
+        <!-- Repos dinámicos -->
+      </section>
+
+      <footer>
+        <div>Nota: peticiones a la API pública de GitHub sin token están limitadas. Si recibes errores por límite, usa un token personal en el código.</div>
+      </footer>
+    </div>
+
+    <aside class="card right">
+      <label for="repoInput">Mostrar estadísticas de otro repo</label>
+      <input id="repoInput" type="text" placeholder="usuario/repositorio (ej: octocat/Hello-World)" />
+      <button class="btn" id="fetchBtn">Cargar mi repo</button>
+      <div class="small" style="margin-top:12px">Preconfigurado: <code>Yuji-XDev/Rin-Itoshi-Bot</code></div>
+      <div id="errorBox" class="error" style="display:none"></div>
+    </aside>
+  </div>
+
+  <script>
+    // Repos a mostrar inicialmente (el repo que proporcionaste)
+    const initialRepos = ["Yuji-XDev/Rin-Itoshi-Bot"];
+
+    const reposContainer = document.getElementById('reposContainer');
+    const loadingPanel = document.getElementById('loadingPanel');
+    const loadingText = document.getElementById('loadingText');
+    const errorBox = document.getElementById('errorBox');
+
+    function makeRepoCard(data){
+      const updated = new Date(data.updated_at).toLocaleString();
+      const html = `
+        <div style="margin-top:14px;padding:12px;border-radius:12px;background:${getGradient()};border:1px solid rgba(255,255,255,0.02)">
+          <div class="repo-grid">
+            <div class="avatar"><img src="${data.owner.avatar_url}" alt="avatar"></div>
+            <div class="repo-info" style="flex:1">
+              <h2>${escapeHtml(data.full_name)}</h2>
+              <p>${escapeHtml(data.description || '— sin descripción —')}</p>
+              <div class="stats" style="margin-top:10px">
+                <div class="stat">⭐ <b>${num(data.stargazers_count)}</b> Stars</div>
+                <div class="stat">🍴 <b>${num(data.forks_count)}</b> Forks</div>
+                <div class="stat">👁️ <b>${num(data.watchers_count)}</b> Watchers</div>
+                <div class="stat">🐞 <b>${num(data.open_issues_count)}</b> Issues</div>
+                <div class="stat">🧩 <b>${escapeHtml(data.language || '—')}</b></div>
+              </div>
+              <div style="margin-top:10px;font-size:12px;color:var(--muted)">Última actualización: ${updated}</div>
+              <div style="margin-top:10px">
+                <a class="link" href="${data.html_url}" target="_blank" rel="noopener">Ver en GitHub →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      return html;
+    }
+
+    function getGradient(){
+      return 'linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02))';
+    }
+
+    function num(n){ return (n===null||n===undefined) ? '0' : n.toLocaleString(); }
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;');
+    }
+
+    async function fetchRepo(repoFullName){
+      // repoFullName = "owner/repo"
+      const api = `https://api.github.com/repos/${repoFullName}`;
+      const res = await fetch(api, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+      if(!res.ok) throw new Error(\`Error \${res.status}: \${res.statusText}\`);
+      return res.json();
+    }
+
+    async function loadInitial(){
+      try {
+        loadingText.textContent = "Solicitando datos del repositorio…";
+        reposContainer.innerHTML = '';
+        const results = [];
+        for(const r of initialRepos){
+          loadingText.textContent = \`Cargando \${r}...\`;
+          const data = await fetchRepo(r);
+          results.push(data);
+        }
+
+        // Mostrar
+        reposContainer.innerHTML = results.map(d => makeRepoCard(d)).join('');
+        loadingPanel.style.display = 'none';
+        reposContainer.style.opacity = 1;
+      } catch (err){
+        loadingText.textContent = 'No se pudo cargar. Revisa la consola.';
+        console.error(err);
+        errorBox.style.display = 'block';
+        errorBox.textContent = 'Error cargando repos iniciales: ' + err.message;
+      }
+    }
+
+    // Manejo del input para que el usuario pueda ver "su" repo
+    document.getElementById('fetchBtn').addEventListener('click', async () => {
+      const input = document.getElementById('repoInput').value.trim();
+      errorBox.style.display = 'none';
+      if(!input){
+        errorBox.style.display = 'block';
+        errorBox.textContent = 'Escribe el repo en formato usuario/repositorio.';
+        return;
+      }
+      // mostrar spinner y estado
+      loadingPanel.style.display = 'flex';
+      loadingPanel.style.opacity = '1';
+      loadingText.textContent = 'Cargando tu repositorio...';
+      reposContainer.style.opacity = 0.3;
+
+      try {
+        const data = await fetchRepo(input);
+        // Inserta al principio
+        const newHtml = makeRepoCard(data);
+        reposContainer.insertAdjacentHTML('afterbegin', newHtml);
+        loadingPanel.style.display = 'none';
+        reposContainer.style.opacity = 1;
+      } catch (err){
+        console.error(err);
+        loadingPanel.style.display = 'none';
+        reposContainer.style.opacity = 1;
+        errorBox.style.display = 'block';
+        if(err.message.includes('404')) errorBox.textContent = 'Repositorio no encontrado. ¿Usaste el formato correcto (usuario/repositorio)?';
+        else if(err.message.includes('403')) errorBox.textContent = 'Límite de la API de GitHub alcanzado. Intenta con un token o espera unos minutos.';
+        else errorBox.textContent = 'Error: ' + err.message;
+      }
+    });
+
+    // Carga inicial automática
+    loadInitial();
+  </script>
+</body>
+</html>
