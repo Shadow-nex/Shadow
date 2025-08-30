@@ -3,42 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎵 YouTube Audio Player</title>
+<title>🎵 YouTube Player</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
   body {
     margin: 0;
-    font-family: 'Share Tech Mono', monospace;
-    background: black;
-    color: #0f0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e1e1e, #2c2c2c);
+    color: #fff;
     overflow-x: hidden;
   }
 
-  /* Fondo animado estilo hacker */
-  #hacker-bg {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: -1;
-    background: black;
-  }
-
   canvas {
-    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
   }
 
   header {
     text-align: center;
     padding: 20px;
-    background: rgba(0,255,0,0.1);
-    color: #0f0;
-    text-shadow: 0 0 5px #0f0;
+    background: #1db954;
+    color: #fff;
   }
 
   header h1 {
     margin: 0;
-    font-size: 2em;
   }
 
   .input-section {
@@ -50,31 +40,23 @@
     width: 60%;
     padding: 10px;
     border-radius: 50px;
-    border: 1px solid #0f0;
-    background: transparent;
-    color: #0f0;
+    border: none;
     outline: none;
-  }
-
-  input::placeholder {
-    color: #0a0;
   }
 
   button {
     padding: 10px 20px;
     margin-left: 10px;
-    border: 1px solid #0f0;
+    border: none;
     border-radius: 50px;
-    background: transparent;
-    color: #0f0;
+    background: #1db954;
+    color: white;
     cursor: pointer;
     font-weight: bold;
-    transition: 0.3s;
   }
 
   button:hover {
-    background: #0f0;
-    color: black;
+    background: #17a44c;
   }
 
   .playlist {
@@ -86,25 +68,22 @@
   }
 
   .song-card {
-    background: rgba(0,255,0,0.05);
+    background: #2a2a2a;
     min-width: 250px;
     border-radius: 15px;
     overflow: hidden;
     flex-shrink: 0;
-    transition: transform 0.3s, box-shadow 0.3s;
-    border: 1px solid #0f0;
+    transition: transform 0.3s;
   }
 
   .song-card:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 10px #0f0;
   }
 
   .song-card img {
     width: 100%;
     height: 140px;
     object-fit: cover;
-    border-bottom: 1px solid #0f0;
   }
 
   .song-info {
@@ -119,10 +98,10 @@
   .song-info p {
     margin: 3px 0;
     font-size: 12px;
-    color: #0a0;
+    color: #bbb;
   }
 
-  audio {
+  video, audio {
     width: 100%;
     margin-top: 10px;
     outline: none;
@@ -131,46 +110,41 @@
   .download-btn {
     display: inline-block;
     margin-top: 10px;
-    border: 1px solid #0f0;
+    background: #1db954;
+    color: #fff;
     padding: 8px 15px;
     border-radius: 50px;
-    color: #0f0;
     text-decoration: none;
     font-weight: bold;
-    transition: 0.3s;
   }
 
   .download-btn:hover {
-    background: #0f0;
-    color: black;
+    background: #17a44c;
   }
 
   footer {
     text-align: center;
     padding: 10px;
-    color: #0f0;
-    border-top: 1px solid #0f0;
+    color: #fff;
+    border-top: 1px solid #444;
     font-size: 12px;
   }
-
 </style>
 </head>
 <body>
 
-<canvas id="hacker-bg"></canvas>
+<canvas id="bgCanvas"></canvas>
 
 <header>
-  <h1>🎵 YouTube Audio Player</h1>
+  <h1>🎵 YouTube Player</h1>
 </header>
 
 <section class="input-section">
   <input type="text" id="ytUrl" placeholder="Pega el enlace de YouTube aquí">
-  <button onclick="downloadAudio()">🎧 Añadir</button>
+  <button onclick="downloadMedia()">🎧 Añadir</button>
 </section>
 
-<section class="playlist" id="playlist">
-  <!-- Aquí se agregan las canciones -->
-</section>
+<section class="playlist" id="playlist"></section>
 
 <footer>
   ® Desarrollado por Shadow.xyz | © Rin itoshi MD
@@ -178,61 +152,73 @@
 
 <script>
   // ------------------------------
-  // Animación de fondo estilo hacker
+  // Fondo animado simple (partículas)
   // ------------------------------
-  const canvas = document.getElementById('hacker-bg');
+  const canvas = document.getElementById('bgCanvas');
   const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
-  const cols = Math.floor(canvas.width / 20) + 1;
-  const ypos = Array(cols).fill(0);
+  const particles = Array.from({length: 50}, () => ({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: Math.random()*3+1,
+    dx: (Math.random()-0.5)*1,
+    dy: (Math.random()-0.5)*1
+  }));
 
-  function matrix() {
-    ctx.fillStyle = 'rgba(0,0,0,0.05)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#0f0';
-    ctx.font = '15pt monospace';
-
-    for (let i = 0; i < ypos.length; i++) {
-      const text = String.fromCharCode(33 + Math.random() * 94);
-      ctx.fillText(text, i * 20, ypos[i] * 20);
-      if (ypos[i] * 20 > canvas.height && Math.random() > 0.975) ypos[i] = 0;
-      ypos[i]++;
-    }
+  function animate() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(255,255,255,0.2)';
+      ctx.fill();
+      p.x += p.dx;
+      p.y += p.dy;
+      if(p.x<0 || p.x>canvas.width) p.dx*=-1;
+      if(p.y<0 || p.y>canvas.height) p.dy*=-1;
+    });
+    requestAnimationFrame(animate);
   }
-
-  setInterval(matrix, 50);
+  animate();
   window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
   });
 
   // ------------------------------
-  // Función de descarga y playlist
+  // Playlist Audio + Video
   // ------------------------------
   const playlist = [];
 
-  async function downloadAudio() {
+  async function downloadMedia() {
     const url = document.getElementById('ytUrl').value.trim();
     if (!url) return alert('Ingresa un enlace de YouTube');
 
     try {
-      const apiUrl = `https://delirius-apiofc.vercel.app/download/ytmp3?url=${encodeURIComponent(url)}`;
+      let apiUrl;
+      if(url.includes('ytmp4')) {
+        apiUrl = `https://delirius-apiofc.vercel.app/download/ytmp4?url=${encodeURIComponent(url)}`;
+      } else {
+        apiUrl = `https://delirius-apiofc.vercel.app/download/ytmp3?url=${encodeURIComponent(url)}`;
+      }
+
       const res = await fetch(apiUrl);
       const data = await res.json();
 
-      if (!data.status) return alert('Error al obtener el audio');
+      if (!data.status) return alert('Error al obtener el media');
 
       const song = {
         title: data.data.title,
         author: data.data.author,
-        image: data.data.image_max_resolution,
+        image: data.data.image_max_resolution || data.data.image,
         duration: data.data.duration,
         views: data.data.views,
         likes: data.data.likes,
         downloadUrl: data.data.download.url,
-        filename: data.data.download.filename
+        filename: data.data.download.filename,
+        type: data.data.download.extension // mp3 o mp4
       };
 
       playlist.push(song);
@@ -248,7 +234,7 @@
     const container = document.getElementById('playlist');
     container.innerHTML = '';
 
-    playlist.forEach((song, index) => {
+    playlist.forEach(song => {
       const card = document.createElement('div');
       card.className = 'song-card';
       card.innerHTML = `
@@ -258,7 +244,9 @@
           <p>Autor: ${song.author}</p>
           <p>Duración: ${Math.floor(song.duration/60)}:${('0'+(song.duration%60)).slice(-2)}</p>
           <p>Vistas: ${song.views} | Likes: ${song.likes}</p>
-          <audio controls src="${song.downloadUrl}"></audio>
+          ${song.type==='mp4'
+            ? `<video controls src="${song.downloadUrl}"></video>`
+            : `<audio controls src="${song.downloadUrl}"></audio>`}
           <a class="download-btn" href="${song.downloadUrl}" download="${song.filename}" target="_blank">💾 Descargar</a>
         </div>
       `;
