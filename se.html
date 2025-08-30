@@ -3,153 +3,118 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Buscador YouTube - Delirius API</title>
+<title>Buscador YouTube - Coverflow</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #121212;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  h1 {
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  input {
-    padding: 10px;
-    width: 300px;
-    border-radius: 5px;
-    border: none;
-    margin-bottom: 10px;
-  }
-  button.search-btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background: #ff0000;
-    color: #fff;
-    cursor: pointer;
-    margin-bottom: 20px;
-    transition: 0.2s;
-  }
-  button.search-btn:hover {
-    background: #cc0000;
-  }
-  .videos-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    max-width: 900px;
-    width: 100%;
-  }
-  .video-card {
-    background: #1e1e1e;
-    border-radius: 10px;
-    overflow: hidden;
-    width: 260px;
-    transition: 0.2s;
-  }
-  .video-card:hover {
-    transform: scale(1.05);
-  }
-  .video-card img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-  }
-  .video-card .info {
-    padding: 10px;
-  }
-  .video-card h3 {
-    font-size: 16px;
-    margin-bottom: 5px;
-  }
-  .video-card p {
-    font-size: 12px;
-    margin: 3px 0;
-  }
-  .video-card button {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    background: #ff0000;
-    color: #fff;
-    cursor: pointer;
-    font-weight: bold;
-    border-top: 1px solid #cc0000;
-    margin-top: 5px;
-  }
-  .video-card button:hover {
-    background: #cc0000;
-  }
-  footer {
-    margin-top: 40px;
-    font-size: 14px;
-    color: #888;
-    text-align: center;
-  }
+body {
+  margin:0; padding:20px; font-family:Arial, sans-serif; background:#0a0a0a; color:#fff; overflow-x:hidden;
+}
+h1 {
+  text-align:center; color:#ff0055;
+  text-shadow:0 0 10px #ff0055,0 0 20px #ff77aa;
+  animation: neonPulse 1.5s infinite alternate;
+}
+input, .search-btn {
+  display:inline-block; margin:10px auto; padding:10px; border-radius:5px; border:none; outline:none; font-size:16px;
+}
+input { width:300px; }
+.search-btn { background:#ff0055; color:#fff; font-weight:bold; cursor:pointer; transition:0.2s; }
+.search-btn:hover { background:#cc0044; }
+.videos-container-wrapper { perspective:1200px; width:100%; overflow:hidden; position:relative; }
+.videos-container {
+  display:flex; gap:20px; transform-style:preserve-3d; transition:transform 0.5s; transform-origin:center center;
+}
+.video-card {
+  background:#1b1b1b; border-radius:15px; min-width:260px; flex:0 0 auto; text-align:center; box-shadow:0 0 5px #ff0055; transition:transform 0.3s,box-shadow 0.3s;
+}
+.video-card img { width:100%; height:150px; object-fit:cover; border-radius:10px 10px 0 0; }
+.video-card h3 { font-size:16px; margin:5px 0; color:#ff77aa; text-shadow:0 0 5px #ff77aa; animation: neonPulse 1.5s infinite alternate; }
+.video-card p { font-size:12px; margin:2px 0; }
+.video-card button {
+  width:90%; padding:8px; margin:5px 0; border:none; background:#ff0055; color:#fff; font-weight:bold; border-radius:5px; cursor:pointer; text-shadow:0 0 3px #ff77aa; transition:0.2s;
+}
+.video-card button:hover { background:#cc0044; transform:scale(1.05); }
+footer { margin-top:40px; text-align:center; font-size:14px; color:#888; }
+
+/* Animaciones */
+@keyframes neonPulse { 0%{text-shadow:0 0 5px #ff77aa,0 0 10px #ff0055;} 100%{text-shadow:0 0 20px #ff77aa,0 0 40px #ff0055;} }
+/* Modal */
+.modal { display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.95); justify-content:center; align-items:center; backdrop-filter:blur(5px); }
+.modal iframe { width:90%; height:60%; border:none; border-radius:10px; }
+.modal button.close { position:absolute; top:20px; right:20px; background:#ff0055; border:none; padding:10px; font-weight:bold; color:#fff; cursor:pointer; border-radius:5px; }
+.modal button.close:hover { background:#cc0044; }
 </style>
 </head>
 <body>
 
-<h1>Buscador YouTube - Delirius API</h1>
+<h1>Buscador YouTube - Coverflow 3D</h1>
 <input type="text" id="query" placeholder="Escribe tu búsqueda...">
 <button class="search-btn" onclick="buscar()">Buscar</button>
 
-<div class="videos-container" id="videos"></div>
+<div class="videos-container-wrapper">
+  <div class="videos-container" id="videos"></div>
+</div>
 
 <footer>
-  API utilizada: <a href="https://delirius-apiofc.vercel.app" target="_blank" style="color:#ff0000;">Delirius API</a> | Desarrollado por Black Clover
+  API utilizada: <a href="https://delirius-apiofc.vercel.app" target="_blank" style="color:#ff0055;">Delirius API</a> | Desarrollado por Black Clover
 </footer>
 
+<div class="modal" id="modal">
+  <button class="close" onclick="cerrarModal()">Cerrar</button>
+  <iframe id="iframeVideo" src="" allowfullscreen></iframe>
+</div>
+
 <script>
-async function buscar() {
-  const query = document.getElementById('query').value;
+let scrollPos=0, scrollInterval;
+
+async function buscar(){
+  const query=document.getElementById('query').value;
   if(!query) return alert("Escribe algo para buscar");
+  const container=document.getElementById('videos');
+  container.innerHTML='Cargando...';
+  if(scrollInterval) clearInterval(scrollInterval);
 
-  const container = document.getElementById('videos');
-  container.innerHTML = 'Cargando...';
+  try{
+    const res=await fetch(`https://delirius-apiofc.vercel.app/search/ytsearch?q=${encodeURIComponent(query)}`);
+    const data=await res.json();
+    if(!data.status || !data.data.length){ container.innerHTML='No se encontraron resultados'; return; }
 
-  try {
-    const res = await fetch(`https://delirius-apiofc.vercel.app/search/ytsearch?q=${encodeURIComponent(query)}`);
-    const data = await res.json();
-
-    if(!data.status || !data.data.length) {
-      container.innerHTML = 'No se encontraron resultados';
-      return;
-    }
-
-    container.innerHTML = '';
-    const videos = data.data.slice(0, 10); // 10 primeros resultados
-
-    videos.forEach(video => {
-      const card = document.createElement('div');
-      card.className = 'video-card';
-      card.innerHTML = `
+    container.innerHTML='';
+    const videos=data.data.slice(0,10);
+    videos.forEach(video=>{
+      const card=document.createElement('div');
+      card.className='video-card';
+      card.innerHTML=`
         <img src="${video.thumbnail}" alt="${video.title}">
-        <div class="info">
-          <h3>${video.title}</h3>
-          <p><strong>Autor:</strong> <a href="${video.author.url}" target="_blank" style="color:#ff0000;">${video.author.name}</a></p>
-          <p><strong>Duración:</strong> ${video.duration}</p>
-          <p><strong>Vistas:</strong> ${video.views.toLocaleString()}</p>
-          <p><strong>Publicado:</strong> ${video.publishedAt}</p>
-          <p>${video.description}</p>
-        </div>
-        <button onclick="window.open('${video.url}', '_blank')">Ver Video</button>
-        <button onclick="window.open('${video.author.url}', '_blank')">Ver Autor</button>
+        <h3>${video.title}</h3>
+        <p><strong>Autor:</strong> <a href="${video.author.url}" target="_blank" style="color:#ff77aa;">${video.author.name}</a></p>
+        <p><strong>Duración:</strong> ${video.duration}</p>
+        <p><strong>Vistas:</strong> ${video.views.toLocaleString()}</p>
+        <p><strong>Publicado:</strong> ${video.publishedAt}</p>
+        <button onclick="reproducirVideo('${video.videoId}')">Reproducir</button>
+        <button onclick="window.open('${video.url}','_blank')">Ver Video</button>
+        <button onclick="window.open('${video.author.url}','_blank')">Ver Autor</button>
+        <button onclick="copiarLink('${video.url}')">Copiar Link</button>
       `;
       container.appendChild(card);
     });
 
-  } catch (err) {
-    container.innerHTML = 'Error al buscar videos';
-    console.error(err);
-  }
+    const cards=container.children;
+    let angleStep=30; // Ángulo entre tarjetas
+    scrollInterval=setInterval(()=>{
+      scrollPos+=1;
+      if(scrollPos>=container.scrollWidth/2) scrollPos=0;
+      for(let i=0;i<cards.length;i++){
+        const offset=i-(cards.length/2);
+        cards[i].style.transform=`translateX(${(i-cards.length/2)*280 - scrollPos}px) rotateY(${offset*angleStep}deg) scale(${1 - Math.abs(offset)*0.1})`;
+      }
+    },20);
+
+  }catch(err){ container.innerHTML='Error al buscar videos'; console.error(err); }
 }
+
+function copiarLink(url){ navigator.clipboard.writeText(url).then(()=>alert('Link copiado al portapapeles')).catch(()=>alert('Error al copiar')); }
+function reproducirVideo(videoId){ const modal=document.getElementById('modal'); const iframe=document.getElementById('iframeVideo'); iframe.src=`https://www.youtube.com/embed/${videoId}?autoplay=1`; modal.style.display='flex'; }
+function cerrarModal(){ const modal=document.getElementById('modal'); const iframe=document.getElementById('iframeVideo'); iframe.src=''; modal.style.display='none'; }
 </script>
 
 </body>

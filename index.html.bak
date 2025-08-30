@@ -411,7 +411,7 @@
       return `
         <h1>Shadow.xyz</h1>
         <div class="welcome">
-          ¡Hola! soy <b>Shadow.xyz</b>, creador de rin itoshi bot MD.
+          ¡Hola! Bienvenido a <b>Shadow.xyz</b>, un club de bots especiales que te brindan la mejor estadía en tus grupos y más.
         </div>
         <div style="text-align:center;">
           <a class="join-btn" href="https://whatsapp.com/channel/0029VbAtbPA84OmJSLiHis2U" target="_blank" rel="noopener">
