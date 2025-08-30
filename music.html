@@ -5,22 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎵 YouTube Audio Player</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
   body {
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #121212;
-    color: #fff;
+    font-family: 'Share Tech Mono', monospace;
+    background: black;
+    color: #0f0;
+    overflow-x: hidden;
+  }
+
+  /* Fondo animado estilo hacker */
+  #hacker-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1;
+    background: black;
+  }
+
+  canvas {
+    display: block;
   }
 
   header {
     text-align: center;
     padding: 20px;
-    background: #1db954;
-    color: #fff;
+    background: rgba(0,255,0,0.1);
+    color: #0f0;
+    text-shadow: 0 0 5px #0f0;
   }
 
   header h1 {
     margin: 0;
+    font-size: 2em;
   }
 
   .input-section {
@@ -32,23 +50,31 @@
     width: 60%;
     padding: 10px;
     border-radius: 50px;
-    border: none;
+    border: 1px solid #0f0;
+    background: transparent;
+    color: #0f0;
     outline: none;
+  }
+
+  input::placeholder {
+    color: #0a0;
   }
 
   button {
     padding: 10px 20px;
     margin-left: 10px;
-    border: none;
+    border: 1px solid #0f0;
     border-radius: 50px;
-    background: #1db954;
-    color: white;
+    background: transparent;
+    color: #0f0;
     cursor: pointer;
     font-weight: bold;
+    transition: 0.3s;
   }
 
   button:hover {
-    background: #17a44c;
+    background: #0f0;
+    color: black;
   }
 
   .playlist {
@@ -60,22 +86,25 @@
   }
 
   .song-card {
-    background: #1e1e1e;
+    background: rgba(0,255,0,0.05);
     min-width: 250px;
     border-radius: 15px;
     overflow: hidden;
     flex-shrink: 0;
-    transition: transform 0.3s;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid #0f0;
   }
 
   .song-card:hover {
     transform: scale(1.05);
+    box-shadow: 0 0 10px #0f0;
   }
 
   .song-card img {
     width: 100%;
     height: 140px;
     object-fit: cover;
+    border-bottom: 1px solid #0f0;
   }
 
   .song-info {
@@ -90,7 +119,7 @@
   .song-info p {
     margin: 3px 0;
     font-size: 12px;
-    color: #bbb;
+    color: #0a0;
   }
 
   audio {
@@ -102,20 +131,33 @@
   .download-btn {
     display: inline-block;
     margin-top: 10px;
-    background: #1db954;
-    color: #fff;
+    border: 1px solid #0f0;
     padding: 8px 15px;
     border-radius: 50px;
+    color: #0f0;
     text-decoration: none;
     font-weight: bold;
+    transition: 0.3s;
   }
 
   .download-btn:hover {
-    background: #17a44c;
+    background: #0f0;
+    color: black;
   }
+
+  footer {
+    text-align: center;
+    padding: 10px;
+    color: #0f0;
+    border-top: 1px solid #0f0;
+    font-size: 12px;
+  }
+
 </style>
 </head>
 <body>
+
+<canvas id="hacker-bg"></canvas>
 
 <header>
   <h1>🎵 YouTube Audio Player</h1>
@@ -130,7 +172,45 @@
   <!-- Aquí se agregan las canciones -->
 </section>
 
+<footer>
+  ® Desarrollado por Shadow.xyz | © Rin itoshi MD
+</footer>
+
 <script>
+  // ------------------------------
+  // Animación de fondo estilo hacker
+  // ------------------------------
+  const canvas = document.getElementById('hacker-bg');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const cols = Math.floor(canvas.width / 20) + 1;
+  const ypos = Array(cols).fill(0);
+
+  function matrix() {
+    ctx.fillStyle = 'rgba(0,0,0,0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#0f0';
+    ctx.font = '15pt monospace';
+
+    for (let i = 0; i < ypos.length; i++) {
+      const text = String.fromCharCode(33 + Math.random() * 94);
+      ctx.fillText(text, i * 20, ypos[i] * 20);
+      if (ypos[i] * 20 > canvas.height && Math.random() > 0.975) ypos[i] = 0;
+      ypos[i]++;
+    }
+  }
+
+  setInterval(matrix, 50);
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  // ------------------------------
+  // Función de descarga y playlist
+  // ------------------------------
   const playlist = [];
 
   async function downloadAudio() {
@@ -179,7 +259,7 @@
           <p>Duración: ${Math.floor(song.duration/60)}:${('0'+(song.duration%60)).slice(-2)}</p>
           <p>Vistas: ${song.views} | Likes: ${song.likes}</p>
           <audio controls src="${song.downloadUrl}"></audio>
-          <a class="download-btn" href="${song.downloadUrl}" download="${song.filename}">💾 Descargar</a>
+          <a class="download-btn" href="${song.downloadUrl}" download="${song.filename}" target="_blank">💾 Descargar</a>
         </div>
       `;
       container.appendChild(card);
