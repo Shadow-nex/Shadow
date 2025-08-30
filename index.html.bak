@@ -4,55 +4,6 @@
   <meta charset="UTF-8">
   <title>Shadow.xyz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Bienvenido — Rin Itoshi</title>
-  <style>
-    body{
-      margin:0;
-      height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-      background:linear-gradient(135deg,#0f172a,#1e293b);
-      font-family:Arial, sans-serif;
-      color:#fff;
-    }
-    h1{
-      font-size:28px;
-      margin-bottom:18px;
-      font-weight:700;
-    }
-    .spinner{
-      width:80px;
-      height:80px;
-      border:8px solid rgba(255,255,255,0.1);
-      border-top-color:#4f46e5;
-      border-radius:50%;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin{
-      to{transform:rotate(360deg);}
-    }
-    p{
-      margin-top:18px;
-      font-size:14px;
-      color:#cbd5e1;
-    }
-  </style>
-</head>
-<body>
-  <h1>🌸 Bienvenido a Rin Itoshi</h1>
-  <div class="spinner"></div>
-  <p>Cargando estadísticas...</p>
-
-  <script>
-    // Espera 3 segundos y redirige
-    setTimeout(() => {
-      window.location.href = "index.html"; 
-    }, 3000);
-  </script>
   <style>
     :root {
       --main-bg: #111;
