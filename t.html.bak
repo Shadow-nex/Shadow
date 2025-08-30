@@ -1,11 +1,11 @@
-// termux-web.js
+// termux-final.js
 import express from 'express';
 import { exec } from 'child_process';
 
 const app = express();
 app.use(express.json());
 
-// HTML completo con terminal avanzada
+// Servir HTML con terminal ultra realista
 app.get('/', (req, res) => {
   res.send(`
 <!DOCTYPE html>
@@ -13,21 +13,22 @@ app.get('/', (req, res) => {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Termux Web Ultra</title>
+<title>Termux Web Mejorado</title>
 <style>
-body { margin:0; padding:0; font-family: monospace; background:#000; color:#0f0; display:flex; justify-content:center; align-items:center; height:100vh; }
-#terminal { width:90%; max-width:900px; height:85%; background:#111; border-radius:8px; padding:10px; overflow-y:auto; }
-.line { display:flex; flex-wrap:wrap; }
+body { margin:0; padding:0; font-family: monospace; background:#000; color:#0f0; display:flex; justify-content:center; align-items:center; height:100vh;}
+#terminal { width:95%; max-width:900px; height:90%; background:#111; border-radius:8px; padding:10px; overflow-y:auto; box-shadow:0 0 20px #00ff00;}
+.line { display:flex; flex-wrap:wrap; white-space:pre-wrap; }
 .prompt { margin-right:5px; }
-input { background:none; border:none; outline:none; color:#0f0; flex:1; }
-.loading { color: #ff0; }
-.error { color: #f00; }
-.success { color: #0ff; }
+input { background:none; border:none; outline:none; color:#0f0; flex:1; font-family:monospace;}
+.loading { color:#ff0; }
+.error { color:#f00; }
+.success { color:#0ff; }
+.warning { color:#ff8800; }
 </style>
 </head>
 <body>
 <div id="terminal">
-  <div class="line"><span class="prompt">user@webterm:~$</span><input id="cmdInput" autofocus placeholder="Escribe un comando..."></div>
+  <div class="line"><span class="prompt">user@termux-web:~$</span><input id="cmdInput" autofocus placeholder="Escribe un comando..."></div>
 </div>
 
 <script>
@@ -37,65 +38,76 @@ let history = [];
 let historyIndex = -1;
 const commands = ['git clone', 'ls', 'pwd', 'npm install', 'node', 'clear'];
 
-function addLine(content, cls='') {
+function addLine(content, cls='', delay=0) {
   const line = document.createElement('div');
   line.className = 'line ' + cls;
-  line.textContent = content;
-  terminal.appendChild(line);
-  terminal.scrollTop = terminal.scrollHeight;
+  if(delay > 0){
+    line.textContent = '';
+    terminal.appendChild(line);
+    let i = 0;
+    const interval = setInterval(() => {
+      line.textContent += content[i++];
+      if(i >= content.length) clearInterval(interval);
+      terminal.scrollTop = terminal.scrollHeight;
+    }, delay);
+  } else {
+    line.textContent = content;
+    terminal.appendChild(line);
+    terminal.scrollTop = terminal.scrollHeight;
+  }
 }
 
-input.addEventListener('keydown', async (e) => {
-  if (e.key === 'Enter') {
-    const cmd = input.value.trim();
-    if (!cmd) return;
-
-    addLine('user@webterm:~$ ' + cmd);
-    history.push(cmd);
-    historyIndex = history.length;
-
-    input.value = '';
-
-    if (cmd === 'clear') {
-      terminal.innerHTML = '';
-      return;
-    }
-
-    if (!commands.some(c => cmd.startsWith(c))) {
-      addLine('Comando no permitido.', 'error');
-      return;
-    }
-
-    if(cmd.startsWith('git clone') || cmd.startsWith('npm install')){
-      addLine('Ejecutando ' + cmd + '...', 'loading');
-    }
-
-    try {
-      const res = await fetch('/run', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ command: cmd })
-      });
-      const text = await res.text();
-      addLine(text, 'success');
-    } catch(err) {
-      addLine('Error: ' + err.message, 'error');
-    }
+// Ejecutar comando
+async function runCommand(cmd){
+  if(cmd === 'clear'){
+    terminal.innerHTML = '';
+    return;
   }
-  // Navegar historial con flechas
-  if(e.key === 'ArrowUp') {
+  addLine('user@termux-web:~$ ' + cmd);
+  history.push(cmd);
+  historyIndex = history.length;
+
+  if(!commands.some(c => cmd.startsWith(c))){
+    addLine('Comando no permitido.', 'error');
+    return;
+  }
+
+  if(cmd.startsWith('git clone') || cmd.startsWith('npm install')){
+    addLine('Ejecutando ' + cmd + '...\n', 'loading', 30);
+  }
+
+  try{
+    const res = await fetch('/run', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({command:cmd})
+    });
+    const text = await res.text();
+    addLine(text, 'success', 5);
+  } catch(err){
+    addLine('Error: ' + err.message, 'error');
+  }
+}
+
+// Eventos de teclado
+input.addEventListener('keydown', async (e) => {
+  if(e.key === 'Enter'){
+    const cmd = input.value.trim();
+    if(cmd) await runCommand(cmd);
+    input.value = '';
+  }
+  if(e.key === 'ArrowUp'){
     if(historyIndex > 0) historyIndex--;
     input.value = history[historyIndex] || '';
   }
-  if(e.key === 'ArrowDown') {
-    if(historyIndex < history.length - 1) historyIndex++;
+  if(e.key === 'ArrowDown'){
+    if(historyIndex < history.length -1) historyIndex++;
     input.value = history[historyIndex] || '';
   }
-  // Autocompletado TAB
-  if(e.key === 'Tab') {
+  if(e.key === 'Tab'){
     e.preventDefault();
-    const value = input.value;
-    const match = commands.find(c => c.startsWith(value));
+    const val = input.value;
+    const match = commands.find(c => c.startsWith(val));
     if(match) input.value = match;
   }
 });
@@ -105,12 +117,12 @@ input.addEventListener('keydown', async (e) => {
   `);
 });
 
-// Ejecutar comandos seguros
+// Backend ejecutar comandos seguros
 app.post('/run', (req, res) => {
   const { command } = req.body;
   const allowed = ['git clone', 'ls', 'pwd', 'npm install', 'node'];
 
-  if (!allowed.some(c => command.startsWith(c))) {
+  if(!allowed.some(c => command.startsWith(c))){
     return res.status(400).send('Comando no permitido');
   }
 

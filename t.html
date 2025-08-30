@@ -1,135 +1,105 @@
-// termux-final.js
-import express from 'express';
-import { exec } from 'child_process';
-
-const app = express();
-app.use(express.json());
-
-// Servir HTML con terminal ultra realista
-app.get('/', (req, res) => {
-  res.send(`
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Termux Web Mejorado</title>
+<title>Terminal Chida</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
 <style>
-body { margin:0; padding:0; font-family: monospace; background:#000; color:#0f0; display:flex; justify-content:center; align-items:center; height:100vh;}
-#terminal { width:95%; max-width:900px; height:90%; background:#111; border-radius:8px; padding:10px; overflow-y:auto; box-shadow:0 0 20px #00ff00;}
-.line { display:flex; flex-wrap:wrap; white-space:pre-wrap; }
-.prompt { margin-right:5px; }
-input { background:none; border:none; outline:none; color:#0f0; flex:1; font-family:monospace;}
-.loading { color:#ff0; }
-.error { color:#f00; }
-.success { color:#0ff; }
-.warning { color:#ff8800; }
+    body {
+        margin: 0;
+        height: 100vh;
+        background: #0d0d0d;
+        color: #00ff00;
+        font-family: 'Fira Code', monospace;
+        display: flex;
+        flex-direction: column;
+    }
+    #terminal {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+    }
+    #inputArea {
+        display: flex;
+        padding: 10px;
+        background: #111;
+        border-top: 2px solid #00ff00;
+    }
+    #cmdInput {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: #00ff00;
+        font-family: 'Fira Code', monospace;
+        font-size: 16px;
+        outline: none;
+    }
+    #executeBtn {
+        padding: 0 15px;
+        background: #00ff00;
+        color: #000;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        font-family: 'Fira Code', monospace;
+    }
 </style>
 </head>
 <body>
-<div id="terminal">
-  <div class="line"><span class="prompt">user@termux-web:~$</span><input id="cmdInput" autofocus placeholder="Escribe un comando..."></div>
+
+<div id="terminal">💻 Bienvenido a tu Terminal Chida!\n</div>
+
+<div id="inputArea">
+    <input type="text" id="cmdInput" placeholder="Escribe un comando..." autofocus />
+    <button id="executeBtn">Ejecutar</button>
 </div>
 
 <script>
 const terminal = document.getElementById('terminal');
-const input = document.getElementById('cmdInput');
-let history = [];
-let historyIndex = -1;
-const commands = ['git clone', 'ls', 'pwd', 'npm install', 'node', 'clear'];
+const cmdInput = document.getElementById('cmdInput');
+const executeBtn = document.getElementById('executeBtn');
 
-function addLine(content, cls='', delay=0) {
-  const line = document.createElement('div');
-  line.className = 'line ' + cls;
-  if(delay > 0){
-    line.textContent = '';
-    terminal.appendChild(line);
-    let i = 0;
-    const interval = setInterval(() => {
-      line.textContent += content[i++];
-      if(i >= content.length) clearInterval(interval);
-      terminal.scrollTop = terminal.scrollHeight;
-    }, delay);
-  } else {
-    line.textContent = content;
-    terminal.appendChild(line);
+// Función para añadir texto a la terminal
+function printToTerminal(text) {
+    terminal.textContent += text + '\n';
     terminal.scrollTop = terminal.scrollHeight;
-  }
 }
 
-// Ejecutar comando
-async function runCommand(cmd){
-  if(cmd === 'clear'){
-    terminal.innerHTML = '';
-    return;
-  }
-  addLine('user@termux-web:~$ ' + cmd);
-  history.push(cmd);
-  historyIndex = history.length;
-
-  if(!commands.some(c => cmd.startsWith(c))){
-    addLine('Comando no permitido.', 'error');
-    return;
-  }
-
-  if(cmd.startsWith('git clone') || cmd.startsWith('npm install')){
-    addLine('Ejecutando ' + cmd + '...\n', 'loading', 30);
-  }
-
-  try{
-    const res = await fetch('/run', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({command:cmd})
-    });
-    const text = await res.text();
-    addLine(text, 'success', 5);
-  } catch(err){
-    addLine('Error: ' + err.message, 'error');
-  }
+// Función para ejecutar comando (envía al backend)
+async function executeCommand(cmd) {
+    printToTerminal(`> ${cmd}`);
+    try {
+        // Llamada al backend Node.js/Python que ejecute el comando
+        const response = await fetch('/execute', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ command: cmd })
+        });
+        const data = await response.text();
+        printToTerminal(data);
+    } catch (err) {
+        printToTerminal(`Error: ${err}`);
+    }
 }
 
-// Eventos de teclado
-input.addEventListener('keydown', async (e) => {
-  if(e.key === 'Enter'){
-    const cmd = input.value.trim();
-    if(cmd) await runCommand(cmd);
-    input.value = '';
-  }
-  if(e.key === 'ArrowUp'){
-    if(historyIndex > 0) historyIndex--;
-    input.value = history[historyIndex] || '';
-  }
-  if(e.key === 'ArrowDown'){
-    if(historyIndex < history.length -1) historyIndex++;
-    input.value = history[historyIndex] || '';
-  }
-  if(e.key === 'Tab'){
-    e.preventDefault();
-    const val = input.value;
-    const match = commands.find(c => c.startsWith(val));
-    if(match) input.value = match;
-  }
+// Ejecutar al presionar botón
+executeBtn.addEventListener('click', () => {
+    const cmd = cmdInput.value.trim();
+    if(cmd) {
+        executeCommand(cmd);
+        cmdInput.value = '';
+    }
+});
+
+// Ejecutar al presionar Enter
+cmdInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') {
+        executeBtn.click();
+    }
 });
 </script>
+
 </body>
 </html>
-  `);
-});
-
-// Backend ejecutar comandos seguros
-app.post('/run', (req, res) => {
-  const { command } = req.body;
-  const allowed = ['git clone', 'ls', 'pwd', 'npm install', 'node'];
-
-  if(!allowed.some(c => command.startsWith(c))){
-    return res.status(400).send('Comando no permitido');
-  }
-
-  exec(command, { maxBuffer: 1024*1024 }, (error, stdout, stderr) => {
-    if(error) return res.status(500).send(stderr || error.message);
-    res.send(stdout || 'Comando ejecutado correctamente');
-  });
-});
-
-app.listen(3000, () => console.log('Servidor corriendo en http://localhost:3000'));
