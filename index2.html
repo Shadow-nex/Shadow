@@ -6,136 +6,148 @@
 <title>GitHub Stats — Terminal Look</title>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#0d1117;
-    --card:#161b22;
-    --accent:#58a6ff;
-    --muted:#8b949e;
-    --glass: rgba(255,255,255,0.03);
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family:'Fira Code', monospace;
-    background: linear-gradient(180deg,var(--bg) 0%, #0a0f14 100%);
-    color:#c9d1d9;
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:flex-start;
-    padding:20px;
-    flex-direction:column;
-  }
-  .wrap{
-    display:grid;
-    grid-template-columns: 1fr 360px;
-    gap:20px;
-    max-width:1000px;
-    width:100%;
-  }
-  .card{
-    background: var(--card);
-    border-radius:15px;
-    padding:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.5);
-    border:1px solid rgba(255,255,255,0.05);
-    backdrop-filter: blur(6px);
-  }
-  header h1{margin:0;font-size:22px;color:#fff;}
-  header p{margin:4px 0 12px 0;color:var(--muted);font-size:14px;}
+:root{
+  --bg:#0d1117;
+  --card:#161b22;
+  --accent:#58a6ff;
+  --muted:#8b949e;
+  --glass: rgba(255,255,255,0.03);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:'Fira Code', monospace;
+  background:#0d1117;
+  color:#c9d1d9;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:20px;
+  flex-direction:column;
+  overflow:hidden;
+  position:relative;
+}
+canvas#bgCanvas{
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  z-index:-1;
+}
+.wrap{
+  display:grid;
+  grid-template-columns: 1fr 360px;
+  gap:20px;
+  max-width:1000px;
+  width:100%;
+}
+.card{
+  background: var(--card);
+  border-radius:15px;
+  padding:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  border:1px solid rgba(255,255,255,0.05);
+  backdrop-filter: blur(6px);
+  transition:transform .3s ease,opacity .3s ease;
+}
+.card:hover{transform:scale(1.02);}
+header h1{margin:0;font-size:22px;color:#fff;}
+header p{margin:4px 0 12px 0;color:var(--muted);font-size:14px;}
 
-  /* Spinner */
-  .spinner-wrap{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin:20px 0;
-  }
-  .wheel{
-    width:80px;
-    height:80px;
-    border-radius:50%;
-    background: conic-gradient(from 0deg, rgba(88,166,255,0.1) 0deg, rgba(88,166,255,0.25) 40deg, rgba(88,166,255,0.1) 80deg);
-    animation: spin 1s linear infinite;
-    border:6px solid rgba(255,255,255,0.05);
-    box-shadow: inset 0 0 12px rgba(0,0,0,0.4),0 6px 15px rgba(0,0,0,0.4);
-    position:relative;
-  }
-  .wheel::after{
-    content:"";
-    position:absolute;
-    inset:18%;
-    border-radius:50%;
-    background: radial-gradient(circle at 50% 50%, rgba(88,166,255,0.15), transparent 25%), rgba(0,0,0,0.4);
-  }
-  @keyframes spin{from{transform:rotate(0deg);} to{transform:rotate(360deg);}}
+/* Spinner */
+.spinner-wrap{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin:20px 0;
+}
+.wheel{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  background: conic-gradient(from 0deg, rgba(88,166,255,0.1) 0deg, rgba(88,166,255,0.25) 40deg, rgba(88,166,255,0.1) 80deg);
+  animation: spin 1s linear infinite;
+  border:6px solid rgba(255,255,255,0.05);
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.4),0 6px 15px rgba(0,0,0,0.4);
+  position:relative;
+}
+.wheel::after{
+  content:"";
+  position:absolute;
+  inset:18%;
+  border-radius:50%;
+  background: radial-gradient(circle at 50% 50%, rgba(88,166,255,0.15), transparent 25%), rgba(0,0,0,0.4);
+}
+@keyframes spin{from{transform:rotate(0deg);} to{transform:rotate(360deg);}}
 
-  .status{font-size:14px;color:var(--muted);}
-  .repo-grid{
-    display:flex;
-    gap:12px;
-    align-items:center;
-    margin-top:10px;
-  }
-  .avatar{
-    width:70px;
-    height:70px;
-    border-radius:12px;
-    overflow:hidden;
-    flex-shrink:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border:1px solid rgba(255,255,255,0.05);
-  }
-  .avatar img{width:100%;height:100%;object-fit:cover;}
-  .repo-info h2{margin:0;font-size:18px;}
-  .repo-info p{margin:4px 0;color:var(--muted);font-size:13px;}
-  .stats{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-top:10px;
-  }
-  .stat{
-    background: rgba(255,255,255,0.02);
-    padding:6px 10px;
-    border-radius:10px;
-    font-size:13px;
-    color:var(--muted);
-    display:flex;gap:6px;align-items:center;
-    border:1px solid rgba(255,255,255,0.02);
-  }
-  .stat b{color:#c9d1d9;font-weight:600;}
+.status{font-size:14px;color:var(--muted);}
+.repo-grid{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  margin-top:10px;
+}
+.avatar{
+  width:70px;
+  height:70px;
+  border-radius:12px;
+  overflow:hidden;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(255,255,255,0.05);
+}
+.avatar img{width:100%;height:100%;object-fit:cover;}
+.repo-info h2{margin:0;font-size:18px;}
+.repo-info p{margin:4px 0;color:var(--muted);font-size:13px;}
+.stats{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:10px;
+}
+.stat{
+  background: rgba(255,255,255,0.02);
+  padding:6px 10px;
+  border-radius:10px;
+  font-size:13px;
+  color:var(--muted);
+  display:flex;gap:6px;align-items:center;
+  border:1px solid rgba(255,255,255,0.02);
+}
+.stat b{color:#c9d1d9;font-weight:600;}
 
-  .right{position:sticky;top:20px;height:fit-content;}
-  label{font-size:13px;color:var(--muted);display:block;margin-bottom:8px;}
-  input[type="text"]{
-    width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);
-    background:transparent;color:inherit;font-size:14px;
-  }
-  .btn{
-    margin-top:10px;padding:10px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent), #1f6feb);
-    color:white;font-weight:600;cursor:pointer;width:100%;
-    box-shadow:0 6px 15px rgba(88,166,255,0.2);
-    transition:all .2s ease;
-  }
-  .btn:hover{transform:scale(1.02);}
-  .small{font-size:12px;color:var(--muted);margin-top:10px;}
-  .link{color:var(--accent);font-weight:600;text-decoration:none;}
-  footer{
-    margin-top:20px;
-    text-align:center;
-    color:var(--muted);
-    font-size:13px;
-    border-top:1px solid rgba(255,255,255,0.05);
-    padding-top:10px;
-  }
-  .error{color:#ff6b6b;font-weight:600;margin-top:8px;font-size:13px;}
-  @media(max-width:900px){.wrap{grid-template-columns:1fr}.right{position:static}}
+.right{position:sticky;top:20px;height:fit-content;}
+label{font-size:13px;color:var(--muted);display:block;margin-bottom:8px;}
+input[type="text"]{
+  width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);
+  background:transparent;color:inherit;font-size:14px;
+}
+.btn{
+  margin-top:10px;padding:10px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent), #1f6feb);
+  color:white;font-weight:600;cursor:pointer;width:100%;
+  box-shadow:0 6px 15px rgba(88,166,255,0.2);
+  transition:all .2s ease;
+}
+.btn:hover{transform:scale(1.02);}
+.small{font-size:12px;color:var(--muted);margin-top:10px;}
+.link{color:var(--accent);font-weight:600;text-decoration:none;}
+footer{
+  margin-top:20px;
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  border-top:1px solid rgba(255,255,255,0.05);
+  padding-top:10px;
+}
+.error{color:#ff6b6b;font-weight:600;margin-top:8px;font-size:13px;}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}.right{position:static}}
 </style>
 </head>
 <body>
+<canvas id="bgCanvas"></canvas>
+
 <div class="wrap">
   <div class="card">
     <header>
@@ -169,6 +181,50 @@
 </footer>
 
 <script>
+// Fondo animado partículas
+const canvas=document.getElementById('bgCanvas');
+const ctx=canvas.getContext('2d');
+let w,h;
+function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight;}
+window.addEventListener('resize',resize);resize();
+
+const particles=[];
+for(let i=0;i<80;i++){
+  particles.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*2+1,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3});
+}
+
+function animate(){
+  ctx.clearRect(0,0,w,h);
+  for(let p of particles){
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>w)p.vx*=-1;
+    if(p.y<0||p.y>h)p.vy*=-1;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,2*Math.PI);
+    ctx.fillStyle='rgba(88,166,255,0.3)';
+    ctx.fill();
+  }
+  // líneas
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x;
+      const dy=particles[i].y-particles[j].y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<120){
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle='rgba(88,166,255,0.1)';
+        ctx.lineWidth=1;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+
+// Código principal GitHub
 const initialRepos=["Yuji-XDev/Rin-Itoshi-Bot"];
 const reposContainer=document.getElementById('reposContainer');
 const loadingPanel=document.getElementById('loadingPanel');
@@ -180,7 +236,7 @@ function num(n){return (n===null||n===undefined)?'0':n.toLocaleString();}
 
 function makeRepoCard(data){
   const updated=new Date(data.updated_at).toLocaleString();
-  return `<div style="margin-top:14px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02)">
+  return `<div style="margin-top:14px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);animation:fadeIn .5s;">
     <div class="repo-grid">
       <div class="avatar"><img src="${data.owner.avatar_url}" alt="avatar"></div>
       <div class="repo-info" style="flex:1">
@@ -195,7 +251,10 @@ function makeRepoCard(data){
         </div>
         <div style="margin-top:10px;font-size:12px;color:var(--muted)">
         Última actualización: ${updated}</div>
-        <div style="margin-top:10px"><a class="link" href="${data.html_url}" target="_blank" rel="noopener">Ver en GitHub →</a></div>
+        <div style="margin-top:10px;display:flex;gap:6px;align-items:center">
+          <a class="link" href="${data.html_url}" target="_blank" rel="noopener">Ver en GitHub →</a>
+          <button onclick="navigator.clipboard.writeText('${data.html_url}')" style="font-size:11px;padding:2px 6px;border-radius:6px;background:var(--accent);border:none;color:#fff;cursor:pointer;">Copiar URL</button>
+        </div>
       </div>
     </div>
   </div>`;
@@ -263,5 +322,8 @@ document.getElementById('fetchBtn').addEventListener('click', async ()=>{
 // Carga inicial automática
 loadInitial();
 </script>
+<style>
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+</style>
 </body>
 </html>
