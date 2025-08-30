@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buscador YouTube - Botonera</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #121212;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  h1 {
+    margin-bottom: 20px;
+  }
+  input {
+    padding: 10px;
+    width: 300px;
+    border-radius: 5px;
+    border: none;
+    margin-bottom: 20px;
+  }
+  button.search-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background: #ff0000;
+    color: #fff;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: 0.2s;
+  }
+  button.search-btn:hover {
+    background: #cc0000;
+  }
+  .videos-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    max-width: 900px;
+    width: 100%;
+  }
+  .video-card {
+    background: #1e1e1e;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 260px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .video-card:hover {
+    transform: scale(1.05);
+  }
+  .video-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+  }
+  .video-card h3 {
+    padding: 10px;
+    font-size: 16px;
+  }
+  .video-card button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: #ff0000;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    border-top: 1px solid #cc0000;
+  }
+  .video-card button:hover {
+    background: #cc0000;
+  }
+</style>
+</head>
+<body>
+
+<h1>Buscador YouTube - Botonera</h1>
+<input type="text" id="query" placeholder="Escribe tu búsqueda...">
+<button class="search-btn" onclick="buscar()">Buscar</button>
+
+<div class="videos-container" id="videos"></div>
+
+<script>
+async function buscar() {
+  const query = document.getElementById('query').value;
+  if(!query) return alert("Escribe algo para buscar");
+
+  const container = document.getElementById('videos');
+  container.innerHTML = 'Cargando...';
+
+  try {
+    const res = await fetch(`https://dark-core-api.vercel.app/api/search/youtube?query=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    container.innerHTML = '';
+    const videos = data.result.slice(0, 10); // primeros 10 resultados
+
+    videos.forEach(video => {
+      const card = document.createElement('div');
+      card.className = 'video-card';
+      card.innerHTML = `
+        <img src="${video.thumbnail}" alt="${video.title}">
+        <h3>${video.title}</h3>
+        <button onclick="window.open('https://www.youtube.com/watch?v=${video.videoId}', '_blank')">Ver Video</button>
+      `;
+      container.appendChild(card);
+    });
+  } catch (err) {
+    container.innerHTML = 'Error al buscar videos';
+    console.error(err);
+  }
+}
+</script>
+
+</body>
+</html>
