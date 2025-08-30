@@ -6,45 +6,11 @@
 <title>Terminal Chida</title>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
 <style>
-    body {
-        margin: 0;
-        height: 100vh;
-        background: #0d0d0d;
-        color: #00ff00;
-        font-family: 'Fira Code', monospace;
-        display: flex;
-        flex-direction: column;
-    }
-    #terminal {
-        flex: 1;
-        padding: 20px;
-        overflow-y: auto;
-        white-space: pre-wrap;
-    }
-    #inputArea {
-        display: flex;
-        padding: 10px;
-        background: #111;
-        border-top: 2px solid #00ff00;
-    }
-    #cmdInput {
-        flex: 1;
-        background: transparent;
-        border: none;
-        color: #00ff00;
-        font-family: 'Fira Code', monospace;
-        font-size: 16px;
-        outline: none;
-    }
-    #executeBtn {
-        padding: 0 15px;
-        background: #00ff00;
-        color: #000;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-        font-family: 'Fira Code', monospace;
-    }
+    body { margin:0; height:100vh; background:#0d0d0d; color:#00ff00; font-family:'Fira Code', monospace; display:flex; flex-direction:column; }
+    #terminal { flex:1; padding:20px; overflow-y:auto; white-space:pre-wrap; }
+    #inputArea { display:flex; padding:10px; background:#111; border-top:2px solid #00ff00; }
+    #cmdInput { flex:1; background:transparent; border:none; color:#00ff00; font-family:'Fira Code', monospace; font-size:16px; outline:none; }
+    #executeBtn { padding:0 15px; background:#00ff00; color:#000; border:none; cursor:pointer; font-weight:bold; font-family:'Fira Code', monospace; }
 </style>
 </head>
 <body>
@@ -61,30 +27,42 @@ const terminal = document.getElementById('terminal');
 const cmdInput = document.getElementById('cmdInput');
 const executeBtn = document.getElementById('executeBtn');
 
-// Función para añadir texto a la terminal
 function printToTerminal(text) {
     terminal.textContent += text + '\n';
     terminal.scrollTop = terminal.scrollHeight;
 }
 
-// Función para ejecutar comando (envía al backend)
 async function executeCommand(cmd) {
     printToTerminal(`> ${cmd}`);
+
     try {
-        // Llamada al backend Node.js/Python que ejecute el comando
-        const response = await fetch('/execute', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ command: cmd })
-        });
-        const data = await response.text();
-        printToTerminal(data);
+        // Detecta comando git clone especial
+        if(cmd.startsWith('git clone')) {
+            const parts = cmd.split(' ');
+            const url = parts[2];
+            const tokenPrompt = prompt('Si es repositorio privado, ingresa tu token, si no deja vacío:');
+            
+            const response = await fetch('http://localhost:3000/gitclone', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url, token: tokenPrompt })
+            });
+            const data = await response.text();
+            printToTerminal(data);
+        } else {
+            const response = await fetch('http://localhost:3000/execute', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ command: cmd })
+            });
+            const data = await response.text();
+            printToTerminal(data);
+        }
     } catch (err) {
-        printToTerminal(`Error: ${err}`);
+        printToTerminal(`❌ Error: ${err}`);
     }
 }
 
-// Ejecutar al presionar botón
 executeBtn.addEventListener('click', () => {
     const cmd = cmdInput.value.trim();
     if(cmd) {
@@ -93,11 +71,8 @@ executeBtn.addEventListener('click', () => {
     }
 });
 
-// Ejecutar al presionar Enter
 cmdInput.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter') {
-        executeBtn.click();
-    }
+    if(e.key === 'Enter') executeBtn.click();
 });
 </script>
 
