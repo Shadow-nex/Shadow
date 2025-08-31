@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>GitHub Stats — Futuristic Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-/* ======== PRELOADER (igual que antes) ======== */
+/* ======== PRELOADER ======== */
 *{margin:0;padding:0;box-sizing:border-box;}
 body,html{width:100%;height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:#0f172a;color:#fff;display:flex;justify-content:center;align-items:center;}
 canvas#preCanvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;}
@@ -27,11 +28,20 @@ canvas#preCanvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1
   --text:#e5e7eb;
   --muted:#9ca3af;
 }
-.dashboard{max-width:1000px;width:100%;margin:auto;padding:40px 20px;display:flex;flex-direction:column;gap:30px;}
+.dashboard{max-width:1100px;width:100%;margin:auto;padding:40px 20px;display:flex;flex-direction:column;gap:30px;}
 header{text-align:center;}
 header h1{font-size:26px;font-weight:600;color:var(--text);letter-spacing:1px;}
 header p{margin-top:6px;font-size:14px;color:var(--muted);}
 
+/* ======== ESTADÍSTICAS ======== */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-top:20px;}
+.stat-card{background:var(--card);padding:20px;border-radius:18px;text-align:center;backdrop-filter:blur(12px);box-shadow:0 6px 25px rgba(0,0,0,0.4);}
+.stat-card .icon{font-size:28px;margin-bottom:10px;}
+.stat-card .value{font-size:24px;font-weight:700;color:#fff;}
+.stat-card .label{font-size:13px;color:var(--muted);}
+.chart-container{background:var(--card);padding:20px;border-radius:18px;backdrop-filter:blur(12px);box-shadow:0 6px 25px rgba(0,0,0,0.4);}
+
+/* ======== REPOS ======== */
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;}
 .card{background:var(--card);backdrop-filter:blur(12px);border-radius:18px;padding:20px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 6px 25px rgba(0,0,0,0.4);transition:transform .25s, box-shadow .25s;}
 .card:hover{transform:translateY(-5px);box-shadow:0 10px 40px rgba(124,58,237,0.3);}
@@ -53,9 +63,6 @@ input[type="text"]{width:100%;padding:12px;border-radius:10px;border:1px solid r
 .btn:hover{filter:brightness(1.1);}
 .error{color:#ff6b6b;font-weight:600;font-size:13px;margin-top:10px;}
 
-/* Animaciones */
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.card{animation:fadeIn 0.4s ease;}
 footer{text-align:center;margin:20px 0;color:var(--muted);font-size:13px;}
 </style>
 </head>
@@ -78,6 +85,34 @@ footer{text-align:center;margin:20px 0;color:var(--muted);font-size:13px;}
       <p>Visualiza información de repositorios con estilo futurista.</p>
     </header>
 
+    <!-- NUEVA SECCIÓN DE ESTADÍSTICAS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="icon">👥</div>
+        <div class="value" id="usersValue">1,245</div>
+        <div class="label">Usuarios activos</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">⬇️</div>
+        <div class="value" id="downloadsValue">8,530</div>
+        <div class="label">Descargas</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">⭐</div>
+        <div class="value" id="ratingValue">4.8</div>
+        <div class="label">Valoración</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">🕒</div>
+        <div class="value" id="timeValue">12h</div>
+        <div class="label">Tiempo uso</div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <canvas id="statsChart"></canvas>
+    </div>
+
     <div class="cards" id="reposContainer"></div>
 
     <div class="card input-card">
@@ -92,7 +127,7 @@ footer{text-align:center;margin:20px 0;color:var(--muted);font-size:13px;}
 </div>
 
 <script>
-/* ============== PRELOADER IGUAL QUE TU CÓDIGO ============== */
+/* ============== PRELOADER ============== */
 const preCanvas=document.getElementById('preCanvas');
 const ctx=preCanvas.getContext('2d');
 let width=preCanvas.width=window.innerWidth,height=preCanvas.height=window.innerHeight;
@@ -110,6 +145,25 @@ async function fetchRepo(repo){const res=await fetch(`https://api.github.com/rep
 async function loadInitial(){try{const data=await fetchRepo("Yuji-XDev/Rin-Itoshi-Bot");reposContainer.innerHTML=makeRepoCard(data);}catch(e){errorBox.style.display='block';errorBox.textContent='Error inicial: '+e.message;}}
 document.getElementById('fetchBtn').addEventListener('click',async()=>{const val=document.getElementById('repoInput').value.trim();if(!val){errorBox.style.display='block';errorBox.textContent='Escribe un repo válido.';return;}errorBox.style.display='none';try{const data=await fetchRepo(val);reposContainer.insertAdjacentHTML('afterbegin',makeRepoCard(data));}catch(e){errorBox.style.display='block';errorBox.textContent='Error: '+e.message;}});
 loadInitial();
+
+/* ============== GRÁFICO DE ESTADÍSTICAS ============== */
+const ctxChart=document.getElementById('statsChart').getContext('2d');
+new Chart(ctxChart,{
+  type:'bar',
+  data:{
+    labels:['Usuarios','Descargas','Valoración','Horas'],
+    datasets:[{
+      label:'Actividad',
+      data:[1245,8530,4.8,12],
+      backgroundColor:['#7c3aed','#a78bfa','#38bdf8','#facc15']
+    }]
+  },
+  options:{
+    responsive:true,
+    plugins:{legend:{display:false}},
+    scales:{y:{beginAtZero:true}}
+  }
+});
 </script>
 </body>
 </html>
