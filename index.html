@@ -1,520 +1,222 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Shadow.xyz</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    :root {
-      --main-bg: #111;
-      --main-red: #e53935;
-      --main-neon: #ff1744;
-      --text-color: #fff;
-      --menu-bg: #1a1a1a;
-      --content-bg: rgba(20, 2, 2, 0.93);
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bienvenido — shadow.xyz</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body,html{width:100%;height:100%;overflow:hidden;font-family:'Arial',sans-serif;background:#0f172a;display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;position:relative;}
 
-    /* 🌟 Tema Blanco */
-    :root.white-theme {
-      --main-bg: #ffffff;
-      --main-red: #333;
-      --main-neon: #000;
-      --text-color: #000;
-      --menu-bg: #f5f5f5;
-      --content-bg: #ffffff;
-    }
+canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;}
 
-    /* 🌟 Tema Azul */
-    :root.blue-theme {
-      --main-bg: #0a192f;
-      --main-red: #00bcd4;
-      --main-neon: #2196f3;
-      --text-color: #e0f2ff;
-      --menu-bg: #132f4c;
-      --content-bg: #102a43;
-    }
+h1{
+  font-size:32px;
+  font-weight:700;
+  margin-bottom:20px;
+  text-align:center;
+  z-index:1;
+  color:#fff;
+  text-shadow:0 0 10px #7c3aed,0 0 20px #4f46e5,0 0 30px #c084fc;
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
 
-    /* 🌟 Tema Rojo */
-    :root.red-theme {
-      --main-bg: #2b0d0d;
-      --main-red: #f44336;
-      --main-neon: #ff1744;
-      --text-color: #ffeaea;
-      --menu-bg: #400000;
-      --content-bg: #330000;
-    }
+@keyframes glow{
+  0%{text-shadow:0 0 10px #7c3aed,0 0 20px #4f46e5,0 0 30px #c084fc;}
+  100%{text-shadow:0 0 20px #c084fc,0 0 30px #a78bfa,0 0 40px #7c3aed;}
+}
 
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: var(--main-bg);
-      color: var(--text-color);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      transition: all 0.3s ease;
-    }
+/* Spinner 3D neón con pulso */
+.spinner{
+  width:90px;
+  height:90px;
+  border:8px solid rgba(255,255,255,0.1);
+  border-top:8px solid #7c3aed;
+  border-radius:50%;
+  animation:spin 1s linear infinite,neon 1.5s ease-in-out infinite alternate,pulse 1.2s infinite;
+  margin-bottom:15px;
+  z-index:1;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes neon{0%{box-shadow:0 0 20px #7c3aed,0 0 35px #4f46e5,0 0 50px #c084fc;}100%{box-shadow:0 0 35px #c084fc,0 0 50px #a78bfa,0 0 70px #7c3aed;}}
+@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.1);}100%{transform:scale(1);}}
 
-    nav {
-      background: var(--menu-bg);
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      padding: 0.5em 0.7em;
-      box-shadow: 0 1px 12px #0003;
-      position: sticky;
-      top: 0;
-      z-index: 9;
-      gap: 1em;
-    }
+/* Texto dinámico debajo del spinner */
+.loading-message{
+  font-size:14px;
+  font-style:italic;
+  margin-bottom:10px;
+  color:#a78bfa;
+  text-shadow:0 0 10px #7c3aed;
+  min-height:20px;
+  z-index:1;
+}
 
-    .nav-brand {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-right: 1.6em;
-      min-width: 70px;
-      user-select: none;
-    }
+/* Barra de progreso con onda */
+.progress-container{
+  width:240px;
+  height:14px;
+  background:rgba(255,255,255,0.1);
+  border-radius:7px;
+  overflow:hidden;
+  z-index:1;
+  margin-top:5px;
+}
 
-    .nav-brand img {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2.5px solid var(--main-neon);
-      margin-bottom: 0.23em;
-      background: #fff;
-    }
+.progress-bar{
+  width:0%;
+  height:100%;
+  background:linear-gradient(270deg,#7c3aed,#c084fc,#a78bfa);
+  border-radius:7px;
+  transition:width 0.2s ease;
+  background-size:200% 200%;
+  animation:wave 2s linear infinite;
+}
+@keyframes wave{
+  0%{background-position:0% 50%;}
+  100%{background-position:100% 50%;}
+}
 
-    .nav-brand-text {
-      text-align: center;
-      font-size: 0.98em;
-      font-weight: bold;
-      color: var(--text-color);
-      line-height: 1.1;
-    }
+.progress-text{
+  font-size:14px;
+  color:#cbd5e1;
+  margin-top:5px;
+  z-index:1;
+  text-align:center;
+  text-shadow:0 0 5px #7c3aed;
+}
 
-    .menu-links {
-      display: flex;
-      gap: 0.5em;
-      align-items: center;
-      flex: 1;
-    }
+.fade-out{animation:fadeOut 0.8s forwards;}
+@keyframes fadeOut{to{opacity:0;}}
 
-    nav a {
-      color: var(--text-color);
-      text-decoration: none;
-      padding: 0.8em 1.2em;
-      font-weight: bold;
-      border-bottom: 2px solid transparent;
-      transition: color 0.2s, border-bottom 0.2s;
-      font-size: 1.05em;
-      border-radius: 6px 6px 0 0;
-    }
-
-    nav a.active, nav a:hover {
-      color: var(--main-neon);
-      border-bottom: 2.5px solid var(--main-neon);
-    }
-
-    /* 🔘 Botones de tema */
-    .theme-buttons {
-      display: flex;
-      gap: 8px;
-      margin-left: auto;
-      margin-right: 1em;
-    }
-
-    .theme-btn {
-      border: none;
-      border-radius: 50%;
-      padding: 8px;
-      font-size: 18px;
-      cursor: pointer;
-      transition: transform 0.2s;
-      background: var(--main-neon);
-      color: #fff;
-    }
-    .theme-btn:hover {
-      transform: scale(1.2);
-    }
-
-    #main-content {
-      max-width: 900px;
-      margin: 2em auto;
-      padding: 2em;
-      background: var(--content-bg);
-      border-radius: 16px;
-      box-shadow: 0 0 16px 4px #0002;
-      min-height: 400px;
-      transition: all 0.3s ease;
-      flex: 1;
-    }
-
-    h1, h2 {
-      color: var(--main-neon);
-      margin-top: 0;
-    }
-
-    .welcome {
-      font-size: 1.35em;
-      margin-bottom: 2em;
-      text-align: center;
-      line-height: 1.5;
-      color: var(--text-color);
-    }
-
-    .join-btn {
-      display: inline-block;
-      padding: 0.8em 2em;
-      margin: 1.5em 0 2em 0;
-      background: var(--main-neon);
-      color: #fff;
-      font-weight: bold;
-      border: none;
-      border-radius: 32px;
-      font-size: 1.1em;
-      cursor: pointer;
-      transition: 0.2s;
-      text-decoration: none;
-      letter-spacing: 1px;
-    }
-    .join-btn:hover {
-      transform: scale(1.05);
-      opacity: 0.9;
-    }
-
-    /* 🔗 Botones extra */
-    .extra-links {
-      display: flex;
-      gap: 1em;
-      justify-content: center;
-      margin-top: 1.5em;
-    }
-    .extra-links a {
-      padding: 0.6em 1.2em;
-      border-radius: 8px;
-      background: var(--main-neon);
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.2s;
-    }
-    .extra-links a:hover {
-      opacity: 0.85;
-    }
-
-    /* Comandos */
-    .command-buttons{display:flex;gap:1em;justify-content:center;margin:1em 0;}
-    .command-buttons button{padding:0.6em 1.2em;border:none;border-radius:8px;background:var(--main-neon);color:#fff;font-weight:bold;cursor:pointer;}
-    .command-buttons button:hover{opacity:0.85;}
-    .commands-block{white-space:pre-wrap;background:#0002;padding:1em;border-radius:8px;margin-top:1em;}
-
-    /* 🎨 Contacto */
-    .contact-card {
-      background: #111;
-      padding: 25px;
-      border-radius: 15px;
-      margin: 20px auto;
-      max-width: 600px;
-      text-align: center;
-      border: 2px solid #ff1744;
-      box-shadow: 0 0 12px #ff1744, 0 0 25px rgba(255,23,68,0.6);
-      animation: neon-border 2s infinite alternate;
-    }
-
-    @keyframes neon-border {
-      0% { box-shadow: 0 0 10px #ff1744, 0 0 20px rgba(255,23,68,0.6); }
-      100% { box-shadow: 0 0 20px #ff1744, 0 0 40px rgba(255,23,68,0.9); }
-    }
-
-    .contact-card h2 {
-      font-size: 26px;
-      margin-bottom: 10px;
-      color: #ff1744;
-      text-shadow: 0 0 5px #ff1744, 0 0 10px #ff1744, 0 0 20px #ff1744;
-      animation: neon-title 1.8s infinite alternate;
-    }
-
-    @keyframes neon-title {
-      0% { text-shadow: 0 0 5px #ff1744, 0 0 10px #ff1744, 0 0 20px #ff1744; opacity: 1; }
-      50% { text-shadow: 0 0 10px #ff1744, 0 0 25px #ff1744, 0 0 45px #ff1744; opacity: 0.85; }
-      100% { text-shadow: 0 0 3px #ff1744, 0 0 6px #ff1744, 0 0 12px #ff1744; opacity: 1; }
-    }
-
-    .contact-card p {
-      color: #ccc;
-      margin-bottom: 20px;
-      font-size: 16px;
-    }
-
-    .extra-links {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin-top: 15px;
-    }
-
-    .extra-links a {
-      background: #111;
-      color: #fff;
-      padding: 12px 18px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 15px;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
-
-    /* 🎨 Botones multicolor */
-    .extra-links a.email { border: 2px solid #ff9800; box-shadow: 0 0 8px #ff9800; text-shadow: 0 0 6px #ff9800; }
-    .extra-links a.email:hover { background: #ff9800; }
-
-    .extra-links a.whatsapp { border: 2px solid #25D366; box-shadow: 0 0 8px #25D366; text-shadow: 0 0 6px #25D366; }
-    .extra-links a.whatsapp:hover { background: #25D366; }
-
-    .extra-links a.telegram { border: 2px solid #0088cc; box-shadow: 0 0 8px #0088cc; text-shadow: 0 0 6px #0088cc; }
-    .extra-links a.telegram:hover { background: #0088cc; }
-
-    .extra-links a.tiktok { border: 2px solid #ff0050; box-shadow: 0 0 8px #ff0050; text-shadow: 0 0 6px #ff0050; }
-    .extra-links a.tiktok:hover { background: #ff0050; }
-
-    .extra-links a.instagram { border: 2px solid #e1306c; box-shadow: 0 0 8px #e1306c; text-shadow: 0 0 6px #e1306c; }
-    .extra-links a.instagram:hover { background: #e1306c; }
-
-    .extra-links a.paypal { border: 2px solid #003087; box-shadow: 0 0 8px #003087; text-shadow: 0 0 6px #003087; }
-    .extra-links a.paypal:hover { background: #003087; }
-
-    .extra-links a.facebook { border: 2px solid #1877f2; box-shadow: 0 0 8px #1877f2; text-shadow: 0 0 6px #1877f2; }
-    .extra-links a.facebook:hover { background: #1877f2; }
-
-    .extra-links a.youtube { border: 2px solid #ff0000; box-shadow: 0 0 8px #ff0000; text-shadow: 0 0 6px #ff0000; }
-    .extra-links a.youtube:hover { background: #ff0000; }
-
-    .extra-links a.github { border: 2px solid #fff; box-shadow: 0 0 8px #fff; text-shadow: 0 0 6px #fff; }
-    .extra-links a.github:hover { background: #fff; color: #000; }
-
-    /* Footer */
-    footer {
-      background: var(--menu-bg);
-      color: var(--text-color);
-      text-align: center;
-      padding: 1em;
-      margin-top: 2em;
-      border-top: 2px solid var(--main-neon);
-    }
-    footer a {
-      color: var(--main-neon);
-      text-decoration: none;
-      font-weight: bold;
-    }
-  </style>
+/* Footer */
+footer{
+  position:absolute;
+  bottom:10px;
+  font-size:13px;
+  color:#c084fc;
+  z-index:2;
+  text-align:center;
+  text-shadow:0 0 10px #7c3aed,0 0 20px #a78bfa;
+  animation:footerGlow 2s ease-in-out infinite alternate;
+}
+@keyframes footerGlow{
+  0%{text-shadow:0 0 10px #7c3aed,0 0 20px #c084fc;}
+  100%{text-shadow:0 0 20px #c084fc,0 0 40px #7c3aed;}
+}
+</style>
 </head>
 <body>
-  <nav>
-    <div class="nav-brand">
-      <img src="https://files.catbox.moe/c2sewn.jpg" alt="Shadow.xyz">
-      <div class="nav-brand-text">
-        Home<br>Shadow.xyz
-      </div>
-    </div>
-    <div class="menu-links">
-      <a href="/inicio" id="menu-inicio" class="active">Inicio</a>
-      <a href="/commands" id="menu-commands">Comandos</a>
-      <a href="/contacto" id="menu-contacto">Contacto</a>
-    </div>
-    <div class="theme-buttons">
-      <button class="theme-btn" data-theme="white" title="Modo Claro">☀️</button>
-      <button class="theme-btn" data-theme="dark" title="Modo Oscuro">🌙</button>
-      <button class="theme-btn" data-theme="blue" title="Modo Azul">💙</button>
-      <button class="theme-btn" data-theme="red" title="Modo Rojo">🔥</button>
-    </div>
-  </nav>
 
-  <div id="main-content"></div>
+<canvas id="bgCanvas"></canvas>
+<h1 id="welcomeText"></h1>
+<div class="spinner"></div>
+<div class="loading-message" id="loadingMessage"></div>
+<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+<div class="progress-text" id="progressText">0%</div>
 
-  <footer>
-    © 2025 Shadow.xyz | Diseñado con ❤️ por <a href="https://github.com/Yuji-XDev" target="_blank">Yuji-XDev</a>
-  </footer>
+<footer>© 2025 Rin Itoshi — Todos los derechos reservados</footer>
 
-  <script>
-    // 📌 Datos
-    const infoData = `✮ ≽ܫ≼ - INFO - ✧˚ ⋆｡
-* .afk [alasan]
-* .menu
-* .uptime
-* .script
-* .staff
-* .creador
-* .grupos
-* .estado
-* .infobot
-* .sug
-* .ping
-* .reportar <txt>
-* .reglas
-* .speed
-* .sistema
-* .usuarios
-* .ds
-* .funciones
-* .editautoresponder`;
+<script>
+/* ==== Partículas constelación con efecto energía ==== */
+const canvas=document.getElementById('bgCanvas');
+const ctx=canvas.getContext('2d');
+let width=canvas.width=window.innerWidth;
+let height=canvas.height=window.innerHeight;
 
-    const menulistData = `✮ ≽ܫ≼ - MENULIST - ✧˚ ⋆｡
-* .menulist
-* .dev - MENU OWNER
-* .menusticker - MENU STICKERS
-* .menusearch - MENU SEARCH
-* .menudl - MENU DESCARGAS
-* .menulogos - LOGOS
-* .menunsfw - MENU 18
-* .menugp - MENU GRUPO
-* .menu2 - MENU AUDIOS
-* .menurpg - MENU RPG`;
+const particles=[];
+const numParticles=150;
+let mouse={x:width/2,y:height/2};
 
-    const searchData = `✮ ≽ܫ≼ - SEARCH - ✧˚ ⋆｡
-* .animeinfo
-* .animesearch
-* .cuevana
-* .githubsearch
-* .searchhentai
-* .google <búsqueda>
-* .imagen <query>
-* .infoanime
-* .githubstalk <query>
-* .soundcloudsearch <txt>
-* .pinterest
-* .pornhubsearch
-* .spotifysearch <texto>
-* .ytsearch2 <texto>
-* .npmjs
-* .gnula
-* .apksearch
-* .wikis
-* .tiktoksearch <txt>
-* .tweetposts
-* .xnxxs
-* .xvsearch
-* .yts
-* .fdroidsearch <término>
-* .happymodsearch <búsqueda>
-* .cinecalidadsearch <búsqueda>
-* .yahoosearch <búsqueda>
-* .movie <término>`;
+for(let i=0;i<numParticles;i++){
+  particles.push({
+    x:Math.random()*width,
+    y:Math.random()*height,
+    r:Math.random()*2+1,
+    dx:(Math.random()-0.5)*0.7,
+    dy:(Math.random()-0.5)*0.7
+  });
+}
 
-    // 📌 Renderizado
-    function renderInicio() {
-      return `
-        <h1>Shadow.xyz</h1>
-        <div class="welcome">
-          ¡Hola! soy <b>Shadow.xyz</b>, creador de rin itoshi bot MD.
-        </div>
-        <div style="text-align:center;">
-          <a class="join-btn" href="https://whatsapp.com/channel/0029VbAtbPA84OmJSLiHis2U" target="_blank" rel="noopener">
-            Unirme al Canal
-          </a>
-        </div>
-        <div style="text-align:center; margin-top:1em;">
-          <a class="join-btn" href="index2.html" target="_blank">
-            🌟 Shadow.xyz
-          </a>
-        </div>
-        <div class="extra-links">
-          <a href="https://github.com/Yuji-XDev" target="_blank">🌐 GitHub</a>
-          <a href="https://t.me/" target="_blank">📢 Telegram</a>
-        </div>
-      `;
+function animateParticles(){
+  ctx.clearRect(0,0,width,height);
+  for(let i=0;i<numParticles;i++){
+    const p=particles[i];
+    p.x+=p.dx;p.y+=p.dy;
+    if(p.x<0||p.x>width)p.dx*=-1;
+    if(p.y<0||p.y>height)p.dy*=-1;
+
+    // interacción mouse
+    const distX=p.x-mouse.x;
+    const distY=p.y-mouse.y;
+    const dist=Math.sqrt(distX*distX+distY*distY);
+    if(dist<120){p.x+=distX*0.008;p.y+=distY*0.008;}
+
+    // dibujar partículas
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(124,58,237,0.8)';
+    ctx.fill();
+
+    // líneas tipo energía
+    for(let j=i+1;j<numParticles;j++){
+      const p2=particles[j];
+      const dx=p.x-p2.x;
+      const dy=p.y-p2.y;
+      const distance=Math.sqrt(dx*dx+dy*dy);
+      if(distance<110){
+        ctx.beginPath();
+        ctx.strokeStyle=`rgba(196,181,253,${1-distance/110})`;
+        ctx.moveTo(p.x,p.y);
+        ctx.lineTo(p2.x,p2.y);
+        ctx.stroke();
+      }
     }
+  }
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
 
-    function renderCommands() {
-      return `<h2>Comandos</h2>
-        <div class="command-buttons">
-          <button onclick="showCommands('info')">Info</button>
-          <button onclick="showCommands('menulist')">Menulist</button>
-          <button onclick="showCommands('search')">Search</button>
-        </div>
-        <div id="commands-container">
-          <div class="commands-block" id="info-block">${infoData}</div>
-          <div class="commands-block" id="menulist-block" style="display:none;">${menulistData}</div>
-          <div class="commands-block" id="search-block" style="display:none;">${searchData}</div>
-        </div>`;
-    }
+window.addEventListener('resize',()=>{width=canvas.width=window.innerWidth;height=canvas.height=window.innerHeight;});
+window.addEventListener('mousemove',(e)=>{mouse.x=e.clientX;mouse.y=e.clientY;});
 
-    function renderContacto() {
-      return `
-        <div class="contact-card">
-          <h2>📬 Contáctanos</h2>
-          <p>Si deseas comunicarte con nosotros, aquí tienes nuestras redes y formas de contacto:</p>
-          <div class="extra-links">
-            <a class="email" href="mailto:blackoficial2025@gmail.com">📧 Email</a>
-            <a class="whatsapp" href="https://wa.me/123456789" target="_blank">
-            <a class="whatsapp" href="https://wa.me/123456789" target="_blank">💬 WhatsApp</a>
-            <a class="telegram" href="https://t.me/username" target="_blank">📢 Telegram</a>
-            <a class="tiktok" href="https://www.tiktok.com/@username" target="_blank">🎵 TikTok</a>
-            <a class="instagram" href="https://www.instagram.com/username" target="_blank">📸 Instagram</a>
-            <a class="paypal" href="https://paypal.me/username" target="_blank">💰 PayPal</a>
-            <a class="facebook" href="https://www.facebook.com/username" target="_blank">📘 Facebook</a>
-            <a class="youtube" href="https://www.youtube.com/channel/CHANNEL_ID" target="_blank">📺 YouTube</a>
-            <a class="github" href="https://github.com/Yuji-XDev" target="_blank">💻 GitHub</a>
-          </div>
-        </div>
-      `;
-    }
+/* ==== Máquina de escribir con glow ==== */
+const text="ʙɪᴇɴᴠᴇɴɪᴅᴏ/ᴀ sᴏʏ sʜᴀᴅᴏᴡ.xʏᴢ 📡";
+const welcomeText=document.getElementById('welcomeText');
+let index=0;
+function typeWriter(){
+  if(index<text.length){
+    welcomeText.innerHTML+=text.charAt(index);
+    index++;
+    setTimeout(typeWriter,45);
+  }
+}
+typeWriter();
 
-    // 📌 Mostrar comandos
-    function showCommands(type){
-      document.querySelectorAll('#commands-container .commands-block').forEach(el=>el.style.display='none');
-      document.getElementById(type+'-block').style.display='block';
-    }
+/* ==== Mensajes dinámicos ==== */
+const messages=["Cargando datos...", "Preparando el entorno...", "Optimización de energía...", "Conectando con el servidor...", "Todo listo en breve ✨"];
+let msgIndex=0;
+const loadingMessage=document.getElementById('loadingMessage');
+setInterval(()=>{
+  loadingMessage.textContent=messages[msgIndex];
+  msgIndex=(msgIndex+1)%messages.length;
+},1800);
 
-    // 📌 Navegación
-    function setActiveMenu(route){
-      document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
-      if(route==='/commands') document.getElementById('menu-commands').classList.add('active');
-      else if(route==='/contacto') document.getElementById('menu-contacto').classList.add('active');
-      else document.getElementById('menu-inicio').classList.add('active');
-    }
-
-    function renderRoute(route){
-      setActiveMenu(route);
-      let main=document.getElementById('main-content');
-      if(route==='/commands') main.innerHTML=renderCommands();
-      else if(route==='/contacto') main.innerHTML=renderContacto();
-      else main.innerHTML=renderInicio();
-    }
-
-    document.querySelectorAll('nav a').forEach(a=>{
-      a.addEventListener('click',function(e){
-        e.preventDefault();
-        const route=this.getAttribute('href');
-        window.history.pushState({route},'',route);
-        renderRoute(route);
-      });
-    });
-
-    window.addEventListener('popstate',()=>renderRoute(window.location.pathname));
-
-    function initialRoute(){
-      const r=window.location.pathname;
-      if(['/commands','/contacto','/inicio'].includes(r)) renderRoute(r);
-      else {window.history.replaceState({route:'/inicio'},'','/inicio');renderRoute('/inicio');}
-    }
-    initialRoute();
-
-    // 📌 Cambiar Tema
-    const themeBtns=document.querySelectorAll(".theme-btn");
-    themeBtns.forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        document.documentElement.classList.remove("white-theme","blue-theme","red-theme");
-        if(btn.dataset.theme==="white") document.documentElement.classList.add("white-theme");
-        else if(btn.dataset.theme==="blue") document.documentElement.classList.add("blue-theme");
-        else if(btn.dataset.theme==="red") document.documentElement.classList.add("red-theme");
-      });
-    });
-  </script>
+/* ==== Barra de progreso fluida ==== */
+const progressBar=document.getElementById('progressBar');
+const progressText=document.getElementById('progressText');
+let progress=0;
+const interval=setInterval(()=>{
+  progress+=Math.floor(Math.random()*3)+1;
+  if(progress>100)progress=100;
+  progressBar.style.width=progress+'%';
+  progressText.innerHTML=progress+'%';
+  if(progress===100){
+    clearInterval(interval);
+    document.body.classList.add('fade-out');
+    setTimeout(()=>window.location.href='index1.html',800);
+  }
+},80);
+</script>
 </body>
 </html>
