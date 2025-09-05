@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Página no encontrada</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+      color: #fff;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 6rem;
+      margin: 0;
+      color: #ff0055;
+      text-shadow: 0 0 10px #ff0055, 0 0 30px #ff0055;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        text-shadow: 0 0 10px #ff0055, 0 0 30px #ff0055;
+      }
+      50% {
+        text-shadow: 0 0 20px #ff3385, 0 0 50px #ff3385;
+      }
+    }
+
+    p {
+      font-size: 1.5rem;
+      margin: 10px 0 30px;
+      color: #ccc;
+    }
+
+    a {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #ff0055;
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+      box-shadow: 0 0 10px #ff0055;
+    }
+
+    a:hover {
+      background: #ff3385;
+      box-shadow: 0 0 20px #ff3385;
+    }
+  </style>
+</head>
+<body>
+  <h1>404</h1>
+  <p>Oops! La página que buscas no existe 🚫</p>
+  <a href="/">Volver al inicio</a>
+</body>
+</html>
