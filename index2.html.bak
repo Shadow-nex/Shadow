@@ -18,7 +18,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body,html{width:100%;height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
 a{text-decoration:none;color:var(--accent);}
-.dashboard{max-width:1200px;margin:auto;padding:40px 20px;display:flex;flex-direction:column;gap:30px;}
+.dashboard{max-width:1100px;margin:auto;padding:40px 20px;display:flex;flex-direction:column;gap:30px;}
 header{text-align:center;}
 header img{margin:10px auto;}
 header h1{font-size:26px;font-weight:600;letter-spacing:1px;}
@@ -64,15 +64,9 @@ footer{text-align:center;margin:20px 0;color:var(--muted);font-size:13px;}
     <div class="stat-card"><div class="icon">🐞</div><div class="value" id="issuesValue">0</div><div class="label">Issues</div></div>
   </div>
 
-  <!-- Chart actividad -->
+  <!-- Chart -->
   <div class="chart-container">
-    <h3>📈 Commits (últimas 52 semanas)</h3>
-    <canvas id="commitsChart"></canvas>
-  </div>
-
-  <div class="chart-container">
-    <h3>👥 Contribuciones por usuario</h3>
-    <canvas id="contributorsChart"></canvas>
+    <canvas id="statsChart"></canvas>
   </div>
 
   <!-- Repo cards -->
@@ -92,8 +86,7 @@ footer{text-align:center;margin:20px 0;color:var(--muted);font-size:13px;}
 </div>
 
 <script>
-const repo = "Yuji-XDev/Rin-Itoshi-Bot";
-
+/* Fetch repos y actualizar estadísticas */
 async function fetchRepo(repo){
   const res=await fetch(`https://api.github.com/repos/${repo}`);
   if(!res.ok) throw new Error(`Error ${res.status}`);
@@ -123,40 +116,24 @@ function makeRepoCard(data){
 }
 async function load(){
   try{
+    const repo="Yuji-XDev/Rin-Itoshi-Bot";
     const data=await fetchRepo(repo);
     document.getElementById('reposContainer').innerHTML=makeRepoCard(data);
     document.getElementById('starsValue').textContent=data.stargazers_count;
     document.getElementById('forksValue').textContent=data.forks_count;
     document.getElementById('watchersValue').textContent=data.watchers_count;
     document.getElementById('issuesValue').textContent=data.open_issues_count;
-    loadCommitActivity();
-    loadContributors();
+    drawChart([data.stargazers_count,data.forks_count,data.watchers_count,data.open_issues_count]);
   }catch(e){console.error(e);}
 }
-
-/* Commits por semana */
-async function loadCommitActivity(){
-  const res = await fetch(`https://api.github.com/repos/${repo}/stats/commit_activity`);
-  const weeks = await res.json();
-  const labels = weeks.map((w,i)=>"Semana "+(i+1));
-  const commits = weeks.map(w=>w.total);
-  new Chart(document.getElementById('commitsChart').getContext('2d'),{
-    type:'line',
-    data:{labels:labels,datasets:[{label:'Commits',data:commits,fill:false,borderColor:'#ff00ff',tension:0.3}]},
-    options:{responsive:true,plugins:{legend:{labels:{color:'#fff'}}},scales:{x:{ticks:{color:'#94a3b8'}},y:{ticks:{color:'#94a3b8'},beginAtZero:true}}}
-  });
-}
-
-/* Contribuciones por usuario */
-async function loadContributors(){
-  const res = await fetch(`https://api.github.com/repos/${repo}/stats/contributors`);
-  const contributors = await res.json();
-  const labels = contributors.map(c=>c.author.login);
-  const commits = contributors.map(c=>c.total);
-  new Chart(document.getElementById('contributorsChart').getContext('2d'),{
-    type:'doughnut',
-    data:{labels:labels,datasets:[{data:commits,backgroundColor:['#ff00ff','#00ffff','#facc15','#38bdf8','#a78bfa','#4ade80','#fb7185']}]},
-    options:{plugins:{legend:{labels:{color:'#fff'}}}}
+function drawChart(values){
+  new Chart(document.getElementById('statsChart').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['Stars','Forks','Watchers','Issues'],
+      datasets:[{data:values,backgroundColor:['#ff00ff','#00ffff','#facc15','#38bdf8']}]
+    },
+    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
   });
 }
 load();
