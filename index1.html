@@ -20,7 +20,6 @@
       overflow-x: hidden;
     }
 
-    /* 🎆 Partículas */
     #particles {
       position: fixed;
       width: 100%;
@@ -85,7 +84,6 @@
       width: 100%;
     }
 
-    /* 📦 Contenido */
     #content {
       max-width: 900px;
       margin: 3em auto;
@@ -126,6 +124,24 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    .command-category {
+      margin-bottom: 1.5em;
+    }
+
+    .command-category h3 {
+      color: var(--accent);
+      margin-bottom: 0.5em;
+    }
+
+    .command-list {
+      list-style: none;
+      padding-left: 1em;
+    }
+
+    .command-list li {
+      margin: 4px 0;
+    }
   </style>
 </head>
 <body>
@@ -158,12 +174,36 @@
   <script>
     // 🎇 Navegación
     document.querySelectorAll("nav a").forEach(link=>{
-      link.addEventListener("click", e=>{
+      link.addEventListener("click", async e=>{
         e.preventDefault();
         document.querySelectorAll("nav a").forEach(l=>l.classList.remove("active"));
         e.target.classList.add("active");
-        document.getElementById("content").innerHTML =
-          "<h1>"+e.target.textContent+"</h1><p>Sección en construcción 🚧</p>";
+
+        if(e.target.getAttribute("href") === "#comandos") {
+          document.getElementById("content").innerHTML = "<h1>Comandos</h1><p>Cargando comandos desde GitHub... ⏳</p>";
+          
+          try {
+            let res = await fetch("https://api.github.com/repos/Yuji-XDev/Rin-Itoshi-Bot/contents/plugins");
+            let data = await res.json();
+
+            let html = "<h1>📦 Comandos del Bot</h1>";
+            for (let file of data) {
+              if (file.type === "file" && file.name.endsWith(".js")) {
+                let category = file.path.split("/")[1] || "Otros";
+                if (!html.includes(`<h3>${category}</h3>`)) {
+                  html += `<div class='command-category'><h3>${category}</h3><ul class='command-list' id='cat-${category}'></ul></div>`;
+                }
+                html += `<script>document.getElementById('cat-${category}').innerHTML += "<li>${file.name.replace('.js','')}</li>";</script>`;
+              }
+            }
+            document.getElementById("content").innerHTML = html;
+          } catch(err) {
+            document.getElementById("content").innerHTML = "<h1>Error 🚨</h1><p>No se pudieron cargar los comandos.</p>";
+          }
+        } else {
+          document.getElementById("content").innerHTML =
+            "<h1>"+e.target.textContent+"</h1><p>Sección en construcción 🚧</p>";
+        }
       });
     });
 
