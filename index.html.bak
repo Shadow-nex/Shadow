@@ -276,7 +276,7 @@
       if (progress === 100) {
         clearInterval(interval);
         document.body.classList.add('fade-out');
-        setTimeout(() => window.location.href = 'index.js', 800);
+        setTimeout(() => window.location.href = 'index1.html', 800);
       }
     }, 80);
   </script>
