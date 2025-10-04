@@ -1,98 +1,101 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Descargador YouTube MP3 - Personal API</title>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: white;
-      text-align: center;
-      padding: 50px;
-    }
-    h1 {
-      color: #00ffb3;
-    }
-    input, button {
-      padding: 10px;
-      margin: 10px;
-      border-radius: 10px;
-      border: none;
-      font-size: 1rem;
-    }
-    input {
-      width: 80%;
-      max-width: 400px;
-    }
-    button {
-      background: #00ffb3;
-      color: #111;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #00c78b;
-    }
-    .result {
-      margin-top: 30px;
-      background: rgba(255,255,255,0.1);
-      padding: 20px;
-      border-radius: 15px;
-      display: inline-block;
-      width: 90%;
-      max-width: 500px;
-    }
-    a {
-      color: #00ffb3;
-      text-decoration: none;
-      font-weight: bold;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎧 YouTube MP3 Downloader - Rin Itoshi</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    text-align: center;
+    padding: 40px;
+  }
+  h1 { color: #00ffb3; }
+  input, select, button {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+    font-size: 1rem;
+  }
+  button {
+    background: #00ffb3;
+    color: #111;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  button:hover { background: #00c78b; }
+  .result {
+    margin-top: 20px;
+    background: rgba(0,0,0,0.4);
+    padding: 20px;
+    border-radius: 10px;
+  }
+  a { color: #00ffb3; font-weight: bold; }
+</style>
 </head>
 <body>
   <h1>🎵 YouTube MP3 Downloader</h1>
-  <p>Introduce tu enlace de YouTube y tu clave personalizada.</p>
+  <p>Selecciona una API Key y pega el enlace del video de YouTube.</p>
 
-  <input type="text" id="url" placeholder="https://youtube.com/watch?v=ID" />
-  <input type="text" id="apikey" placeholder="Tu API Key personalizada" />
-  <br>
-  <button onclick="descargar()">Descargar MP3</button>
+  <input type="text" id="url" placeholder="https://youtube.com/watch?v=..." />
+  <select id="apikey"></select>
+  <button onclick="descargar()">Descargar Audio</button>
 
   <div id="resultado" class="result"></div>
 
-  <script>
-    async function descargar() {
-      const url = document.getElementById("url").value.trim();
-      const apikey = document.getElementById("apikey").value.trim();
-      const resultado = document.getElementById("resultado");
+<script>
+async function cargarKeys() {
+  try {
+    const res = await fetch("http://localhost:3000/api/keys");
+    const data = await res.json();
+    const select = document.getElementById("apikey");
 
-      if (!url) return resultado.innerHTML = "⚠️ Ingresa una URL de YouTube válida.";
-      if (!apikey) return resultado.innerHTML = "🔑 Ingresa tu API Key personalizada.";
+    data.keys.forEach(k => {
+      const opt = document.createElement("option");
+      opt.value = k.key;
+      opt.textContent = `🔑 ${k.name}`;
+      select.appendChild(opt);
+    });
+  } catch {
+    alert("Error al cargar las keys desde el servidor");
+  }
+}
 
-      resultado.innerHTML = "⏳ Procesando tu solicitud...";
+async function descargar() {
+  const url = document.getElementById("url").value.trim();
+  const key = document.getElementById("apikey").value.trim();
+  const resultado = document.getElementById("resultado");
 
-      try {
-        const apiURL = `https://api.yupra.my.id/api/downloader/ytmp3?url=${encodeURIComponent(url)}&apikey=${apikey}`;
-        const res = await fetch(apiURL);
-        const data = await res.json();
+  if (!url || !key) return resultado.innerHTML = "⚠️ Ingresa una URL y selecciona una key.";
 
-        if (data.status === 200 && data.result) {
-          const { title, link, filesize, duration } = data.result;
-          resultado.innerHTML = `
-            <h3>${title}</h3>
-            <p>📁 Tamaño: ${(filesize / 1024 / 1024).toFixed(2)} MB</p>
-            <p>⏱️ Duración: ${duration.toFixed(1)} segundos</p>
-            <a href="${link}" target="_blank">⬇️ Descargar MP3</a>
-          `;
-        } else {
-          resultado.innerHTML = "❌ Error al obtener el audio. Revisa tu API o el enlace.";
-        }
-      } catch (error) {
-        resultado.innerHTML = "⚠️ Ocurrió un error al conectar con la API.";
-      }
+  resultado.innerHTML = "⏳ Procesando...";
+
+  try {
+    const api = `http://localhost:3000/api/ytmp3?url=${encodeURIComponent(url)}&apikey=${key}`;
+    const res = await fetch(api);
+    const data = await res.json();
+
+    if (data.status === 200 && data.result) {
+      const { title, link, filesize, duration } = data.result;
+      resultado.innerHTML = `
+        <h3>${title}</h3>
+        <p>📁 Tamaño: ${(filesize / 1024 / 1024).toFixed(2)} MB</p>
+        <p>⏱️ Duración: ${duration.toFixed(1)} seg</p>
+        <a href="${link}" target="_blank">⬇️ Descargar MP3</a>
+      `;
+    } else {
+      resultado.innerHTML = "❌ Error al obtener el audio.";
     }
-  </script>
+  } catch {
+    resultado.innerHTML = "⚠️ Error al conectar con la API.";
+  }
+}
+
+cargarKeys();
+</script>
 </body>
 </html>
