@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>shadow_xyz 🔥</title>
   <link rel="icon" href="https://github.com/Shadow-nex.png" type="image/png">
-  <meta name="description" content="Shadow_xyz.">
+  <meta name="description" content="𝙷𝙾𝙻𝙰 𝙱𝙸𝙴𝙽𝚅𝙴𝙽𝙸𝙳𝙾 𝚂𝙾𝚈 𝚂𝙷𝙰𝙳𝙾𝚆_𝙲𝙾𝚁𝙴 🌿">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
@@ -44,6 +44,27 @@
     @keyframes moveParticles {
       from { transform: translate(0, 0) rotate(0deg); }
       to { transform: translate(-50px, -50px) rotate(360deg); }
+    }
+
+    /* 🌌 Imagen animada detrás de los botones */
+    .bg-image {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: url("https://files.catbox.moe/vf7ply.jpg") no-repeat center/cover;
+      opacity: 0.15;
+      z-index: 1;
+      animation: moveBg 20s ease-in-out infinite alternate;
+      filter: blur(2px);
+    }
+
+    @keyframes moveBg {
+      0% { transform: translateX(-50%) translateY(0) scale(1); }
+      50% { transform: translateX(-50%) translateY(-15px) scale(1.05); }
+      100% { transform: translateX(-50%) translateY(0) scale(1); }
     }
 
     h1 {
@@ -128,8 +149,8 @@
     .whatsapp { background: #128C7E; }
     .channel { background: #00aaff; }
     .channel2 { background: #005580; }
-
-    /* Lista de botones adicionales */
+    .imgr { background: #b30000; }
+    
     .social-list {
       display: flex;
       justify-content: center;
@@ -168,6 +189,8 @@
 
   <h1>👋 Bienvenido a mi espacio</h1>
 
+  <div class="bg-image"></div>
+
   <div class="buttons">
     <a href="https://github.com/Shadow-nex" target="_blank" class="btn github">
       <i class="fab fa-github"></i> GitHub
@@ -181,17 +204,20 @@
       <i class="fas fa-bullhorn"></i> Canal de WhatsApp
     </a>
 
-    <a href="https://whatsapp.com/channel/0029VbBCHSsJZg41QE3Ibl3O" target="_blank" class="btn channel2">
+    <a href="https://whatsapp.com/channel/0029VbBCHSsJZg41QE3Ibl3O" target="_blank" class="btn imgr">
       <i class="fas fa-bullhorn"></i> Canal Secundario
+    </a>
+    
+    <a href="https://shadow-xyz.vercel.app/img" target="_blank" class="btn imgr">
+      <i class="fas fa-bullhorn"></i> Imágenes Rin Itoshi   
     </a>
   </div>
 
-  <!-- Lista de botones adicionales -->
   <div class="social-list">
-    <a href="https://youtube.com/@ShadowXYZ" target="_blank"><i class="fab fa-youtube"></i></a>
-    <a href="https://t.me/ShadowXYZ" target="_blank"><i class="fab fa-telegram"></i></a>
-    <a href="https://www.tiktok.com/@ShadowXYZ" target="_blank"><i class="fab fa-tiktok"></i></a>
-    <a href="https://www.instagram.com/ShadowXYZ" target="_blank"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.youtube.com/@FlorencioAcaro" target="_blank"><i class="fab fa-youtube"></i></a>
+    <a href="https://t.me/the_shadow_xyz" target="_blank"><i class="fab fa-telegram"></i></a>
+    <a href="tiktok.com/@dev.shadowcore" target="_blank"><i class="fab fa-tiktok"></i></a>
+    <a href="https://www.instagram.com/notengojajaj" target="_blank"><i class="fab fa-instagram"></i></a>
   </div>
 
   <footer>© 2025 Shadow.xyz — Todos los derechos reservados.</footer>
