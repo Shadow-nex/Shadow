@@ -62,36 +62,50 @@
 
   <script>
     const folder = '/img/';
-    const domain = 'https://shadow-xyz.vercel.app'; // <-- Cambia si tu dominio es otro
+    const domain = 'https://shadow-xyz.vercel.app';
 
-    // Lista de imágenes manual o generada
-    const images = [
-      'shadow1.jpg',
-      'shadow2.jpg',
-      'shadow3.png',
-      'shadow4.webp',
-      'shadow5.jpeg'
-    ];
+    // Intentar detectar automáticamente imágenes del 1 al 50
+    const extensions = ['jpg', 'png', 'jpeg', 'webp'];
+    const maxImages = 50;
 
     const gallery = document.getElementById('gallery');
 
-    images.forEach(img => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      const image = document.createElement('img');
-      image.src = folder + img;
-      const button = document.createElement('button');
-      button.textContent = '📋 Copiar enlace';
-      button.onclick = () => {
-        const fullUrl = `${domain}${folder}${img}`;
-        navigator.clipboard.writeText(fullUrl);
-        button.textContent = '✅ Copiado!';
-        setTimeout(() => button.textContent = '📋 Copiar enlace', 1500);
-      };
-      card.appendChild(image);
-      card.appendChild(button);
-      gallery.appendChild(card);
-    });
+    async function checkImage(url) {
+      try {
+        const res = await fetch(url, { method: 'HEAD' });
+        return res.ok;
+      } catch {
+        return false;
+      }
+    }
+
+    async function loadImages() {
+      for (let i = 1; i <= maxImages; i++) {
+        for (let ext of extensions) {
+          const imgName = `shadow${i}.${ext}`;
+          const fullUrl = `${domain}${folder}${imgName}`;
+          const exists = await checkImage(fullUrl);
+          if (exists) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            const image = document.createElement('img');
+            image.src = fullUrl;
+            const button = document.createElement('button');
+            button.textContent = '📋 Copiar enlace';
+            button.onclick = () => {
+              navigator.clipboard.writeText(fullUrl);
+              button.textContent = '✅ Link copiado!';
+              setTimeout(() => button.textContent = '📋 Copiar enlace', 2000);
+            };
+            card.appendChild(image);
+            card.appendChild(button);
+            gallery.appendChild(card);
+          }
+        }
+      }
+    }
+
+    loadImages();
   </script>
 </body>
 </html>

@@ -3,61 +3,95 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Galería Shadow_Xyz</title>
+  <title>Galería de Shadow_Xyz 🖤</title>
+  <link rel="icon" href="/img/shadow1.jpg" type="image/png">
   <style>
     body {
+      font-family: "Poppins", sans-serif;
       background: #0d0d0d;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
+      color: white;
       text-align: center;
+      margin: 0;
       padding: 20px;
     }
     h1 {
-      color: #00eaff;
-      text-shadow: 0 0 10px #00eaff;
+      font-size: 2em;
+      color: #00ffff;
+      margin-bottom: 20px;
     }
-    .galeria {
+    .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      justify-content: center;
+      padding: 20px;
     }
-    .galeria a {
-      text-decoration: none;
+    .card {
+      background: #1a1a1a;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      transition: transform 0.2s;
     }
-    .galeria img {
+    .card:hover {
+      transform: scale(1.05);
+    }
+    img {
       width: 100%;
       height: 180px;
       object-fit: cover;
-      border-radius: 12px;
-      box-shadow: 0 0 10px #00eaff80;
-      transition: transform 0.3s ease;
     }
-    .galeria img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px #00eaff;
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      background: #00ffff;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #00b3b3;
     }
   </style>
 </head>
 <body>
-  <h1>🖼️ Shadow_Xyz - Galería</h1>
-  <div class="galeria" id="galeria"></div>
+  <h1>🌌 Galería de Shadow_Xyz</h1>
+  <div class="gallery" id="gallery"></div>
 
   <script>
-    // Genera imágenes con nombres tipo shadow1.jpg, shadow2.jpg...
-    const galeria = document.getElementById('galeria');
+    const folder = '/img/';
+    const domain = 'https://shadow-xyz.vercel.app'; // <-- Cambia si tu dominio es otro
 
-    for (let i = 1; i <= 50; i++) { // busca hasta 50 imágenes
-      const img = document.createElement('img');
-      img.src = `shadow${i}.jpg`;
-      img.alt = `shadow${i}`;
-      img.onerror = () => img.remove(); // si no existe, se elimina
-      const a = document.createElement('a');
-      a.href = img.src;
-      a.target = '_blank';
-      a.appendChild(img);
-      galeria.appendChild(a);
-    }
+    // Lista de imágenes manual o generada
+    const images = [
+      'shadow1.jpg',
+      'shadow2.jpg',
+      'shadow3.png',
+      'shadow4.webp',
+      'shadow5.jpeg'
+    ];
+
+    const gallery = document.getElementById('gallery');
+
+    images.forEach(img => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const image = document.createElement('img');
+      image.src = folder + img;
+      const button = document.createElement('button');
+      button.textContent = '📋 Copiar enlace';
+      button.onclick = () => {
+        const fullUrl = `${domain}${folder}${img}`;
+        navigator.clipboard.writeText(fullUrl);
+        button.textContent = '✅ Copiado!';
+        setTimeout(() => button.textContent = '📋 Copiar enlace', 1500);
+      };
+      card.appendChild(image);
+      card.appendChild(button);
+      gallery.appendChild(card);
+    });
   </script>
 </body>
 </html>
