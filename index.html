@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uploader by Rin</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: #00ffaa;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+    }
+
+    form {
+      background: #1a1a1a;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 255, 170, 0.2);
+    }
+
+    input[type="file"] {
+      display: block;
+      margin: 10px 0;
+      padding: 5px;
+    }
+
+    button {
+      background: #00ffaa;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #00ffcc;
+    }
+
+    #status {
+      margin-top: 20px;
+      font-size: 0.9em;
+      color: #bbb;
+      max-width: 500px;
+      text-align: center;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <h1>📤 Subir Archivos</h1>
+
+  <form id="uploadForm">
+    <input type="file" id="fileInput" multiple required />
+    <button type="submit">Subir</button>
+  </form>
+
+  <div id="status">Selecciona tus archivos y súbelos aquí.</div>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const input = document.getElementById('fileInput');
+    const status = document.getElementById('status');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const files = input.files;
+      if (!files.length) return alert("Selecciona un archivo primero.");
+
+      status.innerText = "⏳ Subiendo archivos...";
+
+      const formData = new FormData();
+      for (let file of files) formData.append('files', file);
+
+      // 👇 Aquí se debería llamar a un backend (API o servidor)
+      // que guarde los archivos según su tipo (imagen, video, etc.)
+      // Ejemplo:
+      // const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      // const data = await res.json();
+      // status.innerHTML = data.message + '<br>' + data.links.join('<br>');
+
+      status.innerHTML = "❌ Este HTML no puede guardar archivos por sí solo.<br>Necesita un backend (por ejemplo en Render o Railway).";
+    });
+  </script>
+</body>
+</html>
