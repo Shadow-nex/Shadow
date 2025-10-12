@@ -3,125 +3,95 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shadow_Xyz - Galería</title>
+  <title>Galería Shadow_Xyz</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
       background: #0b0b0b;
       color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      overflow-x: hidden;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      padding: 20px;
     }
-
     h1 {
-      margin: 20px 0;
       color: #00eaff;
       text-shadow: 0 0 15px #00eaff90;
     }
-
-    .carousel {
-      position: relative;
-      width: 90%;
-      max-width: 500px;
-      height: 300px;
-      overflow: hidden;
-      border-radius: 20px;
-      box-shadow: 0 0 20px #00eaff70;
-    }
-
-    .carousel img {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-      border-radius: 20px;
-    }
-
-    .carousel img.active {
-      opacity: 1;
-    }
-
-    .link {
-      margin-top: 20px;
-      display: inline-block;
+    button {
       background: #00eaff;
+      border: none;
       color: #000;
-      text-decoration: none;
-      padding: 10px 20px;
+      padding: 12px 20px;
       border-radius: 10px;
-      font-weight: bold;
-      transition: all 0.3s ease;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: all 0.3s;
     }
-
-    .link:hover {
+    button:hover {
       background: #008cff;
       color: #fff;
       box-shadow: 0 0 15px #00eaff;
     }
+    .galeria {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+    }
+    .galeria a {
+      text-decoration: none;
+    }
+    .galeria img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 15px;
+      box-shadow: 0 0 15px #00eaff70;
+      transition: transform 0.3s ease;
+    }
+    .galeria img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #00eaff;
+    }
   </style>
 </head>
 <body>
-  <h1>🖼️ Shadow_Xyz - Galería</h1>
-  <div class="carousel" id="carousel"></div>
-  <a href="#" class="link" id="imgLink" target="_blank">Ver imagen actual</a>
+  <h1>🖼️ Galería Shadow_Xyz</h1>
+  <button onclick="seleccionarCarpeta()">📁 Seleccionar carpeta</button>
+  <div class="galeria" id="galeria"></div>
 
   <script>
-    // Extensiones válidas
-    const extensiones = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-    const carousel = document.getElementById('carousel');
-    const imgLink = document.getElementById('imgLink');
-    let index = 0, imagenes = [];
-
-    async function cargarImagenes() {
+    async function seleccionarCarpeta() {
       try {
-        const res = await fetch(window.location.href);
-        const text = await res.text();
-
-        // Buscar archivos con extensión de imagen
-        const archivos = text.match(/href="([^"]+\.(?:jpg|jpeg|png|gif|webp))"/gi) || [];
-        imagenes = archivos.map(a => a.replace(/href="|"/g, ''));
-
-        if (imagenes.length === 0) {
-          carousel.innerHTML = "<p>No hay imágenes en esta carpeta.</p>";
-          return;
+        // Permitir al usuario seleccionar la carpeta
+        const handle = await window.showDirectoryPicker();
+        document.querySelector('button').textContent = "🔄 Cargando imágenes...";
+        
+        const galeria = document.getElementById('galeria');
+        galeria.innerHTML = "";
+        
+        for await (const entry of handle.values()) {
+          if (entry.kind === "file" && /\.(jpg|jpeg|png|gif|webp)$/i.test(entry.name)) {
+            const file = await entry.getFile();
+            const url = URL.createObjectURL(file);
+            const link = document.createElement("a");
+            link.href = url;
+            link.target = "_blank";
+            
+            const img = document.createElement("img");
+            img.src = url;
+            img.alt = entry.name;
+            
+            link.appendChild(img);
+            galeria.appendChild(link);
+          }
         }
 
-        // Crear las imágenes dentro del carrusel
-        imagenes.forEach((img, i) => {
-          const el = document.createElement('img');
-          el.src = img;
-          el.alt = img;
-          if (i === 0) el.classList.add('active');
-          carousel.appendChild(el);
-        });
-
-        // Enlace inicial
-        imgLink.href = imagenes[0];
-        iniciarCarrusel();
-      } catch {
-        carousel.innerHTML = "<p>No se pudieron cargar las imágenes. Usa un servidor local.</p>";
+        document.querySelector('button').textContent = "📁 Volver a seleccionar carpeta";
+      } catch (e) {
+        console.error(e);
+        alert("No se pudo acceder a la carpeta o fue cancelado.");
       }
     }
-
-    function iniciarCarrusel() {
-      const imgs = document.querySelectorAll('.carousel img');
-      setInterval(() => {
-        imgs[index].classList.remove('active');
-        index = (index + 1) % imgs.length;
-        imgs[index].classList.add('active');
-        imgLink.href = imagenes[index];
-      }, 3000); // cambia cada 3 segundos
-    }
-
-    cargarImagenes();
   </script>
 </body>
 </html>
