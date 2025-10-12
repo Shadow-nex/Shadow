@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galería Shadow_Xyz</title>
+  <style>
+    body {
+      background: #0b0b0b;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #00eaff;
+      text-shadow: 0 0 15px #00eaff90;
+    }
+    button {
+      background: #00eaff;
+      border: none;
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+    button:hover {
+      background: #008cff;
+      color: #fff;
+      box-shadow: 0 0 15px #00eaff;
+    }
+    .galeria {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+    }
+    .galeria a {
+      text-decoration: none;
+    }
+    .galeria img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 15px;
+      box-shadow: 0 0 15px #00eaff70;
+      transition: transform 0.3s ease;
+    }
+    .galeria img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #00eaff;
+    }
+  </style>
+</head>
+<body>
+  <h1>🖼️ Galería Shadow_Xyz</h1>
+  <button onclick="seleccionarCarpeta()">📁 Seleccionar carpeta</button>
+  <div class="galeria" id="galeria"></div>
+
+  <script>
+    async function seleccionarCarpeta() {
+      try {
+        // Permitir al usuario seleccionar la carpeta
+        const handle = await window.showDirectoryPicker();
+        document.querySelector('button').textContent = "🔄 Cargando imágenes...";
+        
+        const galeria = document.getElementById('galeria');
+        galeria.innerHTML = "";
+        
+        for await (const entry of handle.values()) {
+          if (entry.kind === "file" && /\.(jpg|jpeg|png|gif|webp)$/i.test(entry.name)) {
+            const file = await entry.getFile();
+            const url = URL.createObjectURL(file);
+            const link = document.createElement("a");
+            link.href = url;
+            link.target = "_blank";
+            
+            const img = document.createElement("img");
+            img.src = url;
+            img.alt = entry.name;
+            
+            link.appendChild(img);
+            galeria.appendChild(link);
+          }
+        }
+
+        document.querySelector('button').textContent = "📁 Volver a seleccionar carpeta";
+      } catch (e) {
+        console.error(e);
+        alert("No se pudo acceder a la carpeta o fue cancelado.");
+      }
+    }
+  </script>
+</body>
+</html>
