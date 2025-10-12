@@ -1,101 +1,145 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Uploader by Rin</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shadow Storage</title>
   <style>
     body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #0f0f0f;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      font-family: "Poppins", sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
       margin: 0;
+      padding: 0;
     }
-
-    h1 {
-      color: #00ffaa;
-      font-size: 1.8em;
-      margin-bottom: 20px;
-    }
-
-    form {
-      background: #1a1a1a;
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(0, 255, 170, 0.2);
-    }
-
-    input[type="file"] {
-      display: block;
-      margin: 10px 0;
-      padding: 5px;
-    }
-
-    button {
-      background: #00ffaa;
-      border: none;
-      color: #000;
-      font-weight: bold;
-      padding: 10px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    button:hover {
-      background: #00ffcc;
-    }
-
-    #status {
-      margin-top: 20px;
-      font-size: 0.9em;
-      color: #bbb;
-      max-width: 500px;
+    header {
+      background: #161b22;
+      padding: 1.5em;
       text-align: center;
-      word-break: break-all;
+      font-size: 1.5em;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #58a6ff;
+      border-bottom: 2px solid #30363d;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1em;
+      padding: 1em;
+    }
+    .card {
+      background: #161b22;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 8px #0004;
+      text-align: center;
+      padding: 10px;
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: scale(1.05);
+    }
+    .thumb {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .file-name {
+      font-size: 0.9em;
+      margin-top: 5px;
+      color: #c9d1d9;
+      word-wrap: break-word;
+    }
+    .link {
+      color: #58a6ff;
+      text-decoration: none;
+      font-size: 0.85em;
+    }
+    .folder {
+      margin: 2em 0 1em;
+      font-size: 1.3em;
+      color: #58a6ff;
+      border-bottom: 1px solid #30363d;
+      padding-bottom: 5px;
     }
   </style>
 </head>
 <body>
-  <h1>📤 Subir Archivos</h1>
+  <header>📁 Shadow Storage</header>
 
-  <form id="uploadForm">
-    <input type="file" id="fileInput" multiple required />
-    <button type="submit">Subir</button>
-  </form>
-
-  <div id="status">Selecciona tus archivos y súbelos aquí.</div>
+  <div id="content"></div>
 
   <script>
-    const form = document.getElementById('uploadForm');
-    const input = document.getElementById('fileInput');
-    const status = document.getElementById('status');
+    const folders = ["images", "videos", "zips", "apk", "documents"];
+    const contentDiv = document.getElementById("content");
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    async function loadFiles() {
+      for (const folder of folders) {
+        const res = await fetch(folder + "/");
+        if (!res.ok) continue;
+        const text = await res.text();
+        const files = [...text.matchAll(/href="([^"]+)"/g)]
+          .map(m => m[1])
+          .filter(f => !f.endsWith("/"));
 
-      const files = input.files;
-      if (!files.length) return alert("Selecciona un archivo primero.");
+        if (files.length > 0) {
+          const section = document.createElement("section");
+          const title = document.createElement("div");
+          title.className = "folder";
+          title.textContent = "📂 " + folder.toUpperCase();
+          section.appendChild(title);
 
-      status.innerText = "⏳ Subiendo archivos...";
+          const container = document.createElement("div");
+          container.className = "container";
 
-      const formData = new FormData();
-      for (let file of files) formData.append('files', file);
+          for (const file of files) {
+            const card = document.createElement("div");
+            card.className = "card";
 
-      // 👇 Aquí se debería llamar a un backend (API o servidor)
-      // que guarde los archivos según su tipo (imagen, video, etc.)
-      // Ejemplo:
-      // const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      // const data = await res.json();
-      // status.innerHTML = data.message + '<br>' + data.links.join('<br>');
+            const fileUrl = folder + "/" + file;
+            const ext = file.split(".").pop().toLowerCase();
+            let thumbSrc;
 
-      status.innerHTML = "❌ Este HTML no puede guardar archivos por sí solo.<br>Necesita un backend (por ejemplo en Render o Railway).";
-    });
+            if (["jpg", "jpeg", "png", "gif", "webp"].includes(ext)) {
+              thumbSrc = fileUrl;
+            } else if (["mp4", "webm", "mov"].includes(ext)) {
+              thumbSrc = "https://cdn-icons-png.flaticon.com/512/1179/1179120.png";
+            } else if (["zip", "rar"].includes(ext)) {
+              thumbSrc = "https://cdn-icons-png.flaticon.com/512/888/888883.png";
+            } else if (["apk"].includes(ext)) {
+              thumbSrc = "https://cdn-icons-png.flaticon.com/512/888/888857.png";
+            } else {
+              thumbSrc = "https://cdn-icons-png.flaticon.com/512/2991/2991108.png";
+            }
+
+            const img = document.createElement("img");
+            img.src = thumbSrc;
+            img.className = "thumb";
+            card.appendChild(img);
+
+            const name = document.createElement("div");
+            name.className = "file-name";
+            name.textContent = file;
+            card.appendChild(name);
+
+            const link = document.createElement("a");
+            link.href = fileUrl;
+            link.textContent = "Ver / Descargar";
+            link.className = "link";
+            card.appendChild(link);
+
+            container.appendChild(card);
+          }
+
+          section.appendChild(container);
+          contentDiv.appendChild(section);
+        }
+      }
+    }
+
+    loadFiles();
   </script>
 </body>
 </html>
