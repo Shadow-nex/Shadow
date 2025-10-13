@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Descargador TikTok</title>
+<title>𝘋𝘦𝘴𝘤𝘢𝘳𝘨𝘢𝘴 𝘛𝘪𝘬𝘛𝘰𝘬 | 𝘚𝘩𝘢𝘥𝘰𝘸_𝘹𝘺𝘻 ♻️</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
   @keyframes bgAnimation {
     0% {background-position: 0% 50%;}
@@ -34,11 +35,40 @@
   }
   button { padding: 12px 20px; border-radius: 10px; border: none; background-color: #ff4081; color: #fff; font-size: 16px; cursor: pointer; margin-left: 10px; }
   button:hover { background-color: #e73370; }
-  .video-container { margin-top: 20px; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 15px; max-width: 600px; width: 100%; text-align: center; }
-  video { width: 100%; border-radius: 15px; margin-bottom: 15px; }
-  p { margin: 5px 0; }
-  a.download-btn { display: inline-block; margin: 5px; padding: 10px 15px; border-radius: 10px; background: #ff4081; color: #fff; text-decoration: none; font-weight: bold; }
-  a.download-btn:hover { background-color: #e73370; }
+  .video-container { margin-top: 20px; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 15px; max-width: 600px; width: 100%; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.5);}
+  video { width: 100%; border-radius: 15px; margin-bottom: 15px; border: 2px solid #fff; }
+  p { margin: 5px 0; font-size: 16px; }
+  .btn-group { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
+
+  a.tiktok-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    border-radius: 12px;
+    background: #25F4EE;
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+  a.tiktok-btn i { font-size: 18px; }
+  a.tiktok-btn:hover { background: #1ec4c3; transform: scale(1.05); }
+
+  a.download-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    border-radius: 12px;
+    background: #ff0055;
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+  a.download-btn i { font-size: 18px; }
+  a.download-btn:hover { background: #e60049; transform: scale(1.05); }
 </style>
 </head>
 <body>
@@ -47,17 +77,16 @@
 
 <div>
   <input type="text" id="tiktokURL" placeholder="Pega el enlace de TikTok aquí...">
-  <button onclick="fetchTikTok()">Buscar</button>
+  <button onclick="fetchTikTok()"><i class="fa-solid fa-magnifying-glass"></i> Buscar</button>
 </div>
 
 <div id="videoInfo" class="video-container" style="display:none;">
   <video id="tiktokVideo" controls></video>
   <p id="videoTitle"></p>
   <p id="videoAuthor"></p>
-  <div>
-    <a id="downloadVideoBtn" class="download-btn" download>Descargar Video</a>
-    <a id="downloadAudioBtn" class="download-btn" download>Descargar Audio</a>
-    <a id="viewTikTokBtn" class="download-btn" target="_blank">Ver en TikTok</a>
+  <div class="btn-group">
+    <a id="downloadVideoBtn" class="download-btn" download><i class="fa-solid fa-download"></i> Descargar Video</a>
+    <a id="viewTikTokBtn" class="tiktok-btn" target="_blank"><i class="fa-brands fa-tiktok"></i> Ver en TikTok</a>
   </div>
 </div>
 
@@ -79,7 +108,6 @@ async function fetchTikTok() {
     const titleEl = document.getElementById('videoTitle');
     const authorEl = document.getElementById('videoAuthor');
     const downloadVideoBtn = document.getElementById('downloadVideoBtn');
-    const downloadAudioBtn = document.getElementById('downloadAudioBtn');
     const viewTikTokBtn = document.getElementById('viewTikTokBtn');
 
     videoEl.src = videoData.play; // Video sin marca de agua
@@ -87,8 +115,6 @@ async function fetchTikTok() {
     authorEl.innerText = `Autor: ${videoData.author.nickname}`;
     downloadVideoBtn.href = videoData.play;
     downloadVideoBtn.download = `${videoData.title}.mp4`;
-    downloadAudioBtn.href = videoData.music;
-    downloadAudioBtn.download = `${videoData.title}.mp3`;
     viewTikTokBtn.href = url;
 
     document.getElementById('videoInfo').style.display = 'block';
