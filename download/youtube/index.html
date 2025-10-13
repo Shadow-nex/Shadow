@@ -32,14 +32,14 @@
     }
 
     button {
-      padding: 10px 20px;
+      padding: 8px 15px;
       border-radius: 5px;
       border: none;
       background-color: #ff4081;
       color: #fff;
-      font-size: 16px;
+      font-size: 14px;
       cursor: pointer;
-      margin-left: 10px;
+      margin: 3px;
     }
 
     button:hover {
@@ -84,6 +84,13 @@
       margin: 2px 0;
       font-size: 14px;
       color: #ccc;
+    }
+
+    .video-buttons {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
     }
 
     /* Modal styles */
@@ -152,12 +159,16 @@
     </div>
   </div>
 
+  <!-- Sonido para copiar -->
+  <audio id="copySound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
+
   <script>
     const form = document.getElementById('searchForm');
     const resultsDiv = document.getElementById('results');
     const modal = document.getElementById('videoModal');
     const iframe = document.getElementById('videoFrame');
     const closeModal = document.getElementById('closeModal');
+    const copySound = document.getElementById('copySound');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -187,13 +198,41 @@
                 <p><strong>Duración:</strong> ${video.duration} | <strong>Vistas:</strong> ${video.views.toLocaleString()}</p>
                 <p><strong>Publicado:</strong> ${video.publishedAt}</p>
                 <p><strong>Autor:</strong> <a href="${video.author.url}" target="_blank">${video.author.name}</a></p>
+                <div class="video-buttons">
+                  <button class="copy-btn">Copiar Link</button>
+                  <button class="youtube-btn">Ver en YouTube</button>
+                  <button class="download-btn">Descargar</button>
+                </div>
               </div>
             `;
 
-            // Abrir modal al hacer click
-            card.addEventListener('click', () => {
+            // Abrir modal al click en miniatura
+            card.querySelector('img').addEventListener('click', () => {
               iframe.src = `https://www.youtube.com/embed/${video.videoId}?autoplay=1`;
               modal.style.display = 'flex';
+            });
+
+            // Botón copiar
+            card.querySelector('.copy-btn').addEventListener('click', (e) => {
+              e.stopPropagation();
+              navigator.clipboard.writeText(video.url)
+                .then(() => {
+                  copySound.play();
+                  alert('¡Link copiado!');
+                });
+            });
+
+            // Botón ver en YouTube
+            card.querySelector('.youtube-btn').addEventListener('click', (e) => {
+              e.stopPropagation();
+              window.open(video.url, '_blank');
+            });
+
+            // Botón descargar (redirige al video por ahora)
+            card.querySelector('.download-btn').addEventListener('click', (e) => {
+              e.stopPropagation();
+              // Aquí se podría conectar una API de descarga si se desea
+              window.open(video.url, '_blank');
             });
 
             resultsDiv.appendChild(card);
