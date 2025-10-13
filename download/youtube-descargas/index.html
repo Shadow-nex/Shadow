@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Descargador YouTube</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ff4081;
+    }
+
+    form {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      width: 60%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 5px;
+      border: none;
+      background-color: #ff4081;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    button:hover {
+      background-color: #e73370;
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .info img {
+      width: 320px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .download-section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .download-card {
+      background-color: #1e1e1e;
+      padding: 15px;
+      border-radius: 10px;
+      width: 250px;
+      text-align: center;
+    }
+
+    select {
+      width: 80%;
+      padding: 5px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+    }
+
+    a.download-btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 15px;
+      border-radius: 5px;
+      background-color: #ff4081;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    a.download-btn:hover {
+      background-color: #e73370;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>Descargador YouTube</h1>
+
+  <form id="downloadForm">
+    <input type="text" id="youtubeURL" placeholder="Pega el enlace de YouTube aquí..." required>
+    <button type="submit">Buscar Video</button>
+  </form>
+
+  <div class="info" id="videoInfo"></div>
+
+  <div class="download-section" id="downloadSection"></div>
+
+  <script>
+    const form = document.getElementById('downloadForm');
+    const videoInfoDiv = document.getElementById('videoInfo');
+    const downloadSection = document.getElementById('downloadSection');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = document.getElementById('youtubeURL').value.trim();
+      if (!url) return;
+
+      videoInfoDiv.innerHTML = 'Cargando información...';
+      downloadSection.innerHTML = '';
+
+      try {
+        // Llamada para audio
+        const audioRes = await fetch(`https://api.vreden.my.id/api/v1/download/youtube/audio?url=${encodeURIComponent(url)}&quality=128`);
+        const audioData = await audioRes.json();
+
+        // Llamada para video
+        const videoRes = await fetch(`https://api.vreden.my.id/api/v1/download/youtube/video?url=${encodeURIComponent(url)}&quality=360`);
+        const videoData = await videoRes.json();
+
+        if (!audioData.status || !videoData.status) {
+          videoInfoDiv.innerHTML = 'Error al obtener información del video.';
+          return;
+        }
+
+        const metadata = audioData.result.metadata;
+        const thumbnail = metadata.thumbnail;
+
+        videoInfoDiv.innerHTML = `
+          <img src="${thumbnail}" alt="${metadata.title}">
+          <h2>${metadata.title}</h2>
+          <p><strong>Autor:</strong> <a href="${metadata.author.url}" target="_blank">${metadata.author.name}</a></p>
+          <p><strong>Duración:</strong> ${metadata.duration.timestamp} | <strong>Vistas:</strong> ${metadata.views.toLocaleString()}</p>
+        `;
+
+        // Crear selector de calidad para audio
+        const audioCard = document.createElement('div');
+        audioCard.className = 'download-card';
+        audioCard.innerHTML = `
+          <h3>Descargar Audio</h3>
+          <select id="audioQualitySelect">
+            ${audioData.result.download.availableQuality.map(q => `<option value="${q}">${q} kbps</option>`).join('')}
+          </select>
+          <a href="${audioData.result.download.url}" id="audioDownloadBtn" class="download-btn" target="_blank">Descargar</a>
+        `;
+        downloadSection.appendChild(audioCard);
+
+        // Cambiar URL de descarga según la calidad seleccionada
+        const audioSelect = audioCard.querySelector('#audioQualitySelect');
+        const audioBtn = audioCard.querySelector('#audioDownloadBtn');
+        audioSelect.addEventListener('change', async () => {
+          const selectedQuality = audioSelect.value;
+          const res = await fetch(`https://api.vreden.my.id/api/v1/download/youtube/audio?url=${encodeURIComponent(url)}&quality=${selectedQuality}`);
+          const data = await res.json();
+          if(data.status) audioBtn.href = data.result.download.url;
+        });
+
+        // Crear selector de calidad para video
+        const videoCard = document.createElement('div');
+        videoCard.className = 'download-card';
+        videoCard.innerHTML = `
+          <h3>Descargar Video</h3>
+          <select id="videoQualitySelect">
+            ${videoData.result.download.availableQuality.map(q => `<option value="${q}">${q}p</option>`).join('')}
+          </select>
+          <a href="${videoData.result.download.url}" id="videoDownloadBtn" class="download-btn" target="_blank">Descargar</a>
+        `;
+        downloadSection.appendChild(videoCard);
+
+        const videoSelect = videoCard.querySelector('#videoQualitySelect');
+        const videoBtn = videoCard.querySelector('#videoDownloadBtn');
+        videoSelect.addEventListener('change', async () => {
+          const selectedQuality = videoSelect.value;
+          const res = await fetch(`https://api.vreden.my.id/api/v1/download/youtube/video?url=${encodeURIComponent(url)}&quality=${selectedQuality}`);
+          const data = await res.json();
+          if(data.status) videoBtn.href = data.result.download.url;
+        });
+
+      } catch (err) {
+        console.error(err);
+        videoInfoDiv.innerHTML = 'Error al procesar la solicitud.';
+      }
+    });
+  </script>
+
+</body>
+</html>
