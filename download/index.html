@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscador YouTube 👻</title>
+  <style>
+    body { font-family: Arial; background: #121212; color: #fff; margin:0; padding:0; }
+    h1 { text-align: center; color: #ff4081; padding: 20px; }
+    #searchBar { display:flex; justify-content:center; margin-bottom:20px; }
+    #query { width: 300px; padding:10px; border-radius:5px; border:none; }
+    #searchBtn { padding:10px 20px; margin-left:10px; border:none; border-radius:5px; background:#ff4081; color:white; cursor:pointer; }
+    #results { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:20px; }
+    .video-card { background:#1e1e1e; width:300px; border-radius:10px; overflow:hidden; display:flex; flex-direction:column; }
+    .video-card img { width:100%; height:170px; object-fit:cover; }
+    .info { padding:10px; flex:1; }
+    .info h3 { margin:0; color:#ff4081; font-size:16px; }
+    .info p { margin:5px 0; color:#ccc; font-size:14px; }
+    .buttons { display:flex; justify-content:space-between; padding:10px; }
+    .buttons button { background:#ff4081; border:none; padding:6px 10px; border-radius:5px; cursor:pointer; color:#fff; }
+    .buttons button:hover { background:#e91e63; }
+  </style>
+</head>
+<body>
+
+<h1>Buscador YouTube 👻</h1>
+
+<div id="searchBar">
+  <input type="text" id="query" placeholder="Escribe tu búsqueda...">
+  <button id="searchBtn">Buscar</button>
+</div>
+
+<div id="results"></div>
+
+<script>
+  const resultsDiv = document.getElementById('results');
+  const searchBtn = document.getElementById('searchBtn');
+  const queryInput = document.getElementById('query');
+
+  searchBtn.addEventListener('click', () => {
+    const query = queryInput.value.trim();
+    if(query) searchYouTube(query);
+  });
+
+  async function searchYouTube(query) {
+    resultsDiv.innerHTML = "<p>Cargando...</p>";
+    try {
+      const res = await fetch(`https://youtube-search-api.vercel.app/api/search?query=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      resultsDiv.innerHTML = "";
+      data.items.forEach(video => {
+        if(video.type === "video") {
+          const card = document.createElement('div');
+          card.classList.add('video-card');
+          card.innerHTML = `
+            <img src="${video.thumbnail[0].url}" alt="${video.title}">
+            <div class="info">
+              <h3>${video.title}</h3>
+              <p>${video.author.name}</p>
+              <p>Duración: ${video.duration}</p>
+            </div>
+            <div class="buttons">
+              <button onclick="copyLink('${video.link}')">Copiar Link</button>
+              <button onclick="window.open('${video.link}', '_blank')">Ver en YouTube</button>
+            </div>
+          `;
+          resultsDiv.appendChild(card);
+        }
+      });
+    } catch(err) {
+      resultsDiv.innerHTML = "<p>Error al buscar. Intenta de nuevo.</p>";
+      console.error(err);
+    }
+  }
+
+  function copyLink(url) {
+    navigator.clipboard.writeText(url)
+      .then(() => alert("¡Link copiado al portapapeles!"))
+      .catch(err => alert("Error al copiar link: " + err));
+  }
+</script>
+
+</body>
+</html>
