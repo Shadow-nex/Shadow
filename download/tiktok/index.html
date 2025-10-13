@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Descargador TikTok</title>
+<style>
+  @keyframes bgAnimation {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+  }
+  body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    background: linear-gradient(-45deg, #ff6ec4, #7873f5, #42e695, #f5a623);
+    background-size: 400% 400%;
+    animation: bgAnimation 15s ease infinite;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  h1 { text-align: center; margin-bottom: 20px; color: #fff; text-shadow: 2px 2px 5px #000; }
+  input[type=text] {
+    width: 70%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  button { padding: 12px 20px; border-radius: 10px; border: none; background-color: #ff4081; color: #fff; font-size: 16px; cursor: pointer; margin-left: 10px; }
+  button:hover { background-color: #e73370; }
+  .video-container { margin-top: 20px; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 15px; max-width: 600px; width: 100%; text-align: center; }
+  video { width: 100%; border-radius: 15px; margin-bottom: 15px; }
+  p { margin: 5px 0; }
+  a.download-btn { display: inline-block; margin: 5px; padding: 10px 15px; border-radius: 10px; background: #ff4081; color: #fff; text-decoration: none; font-weight: bold; }
+  a.download-btn:hover { background-color: #e73370; }
+</style>
+</head>
+<body>
+
+<h1>Descargador TikTok</h1>
+
+<div>
+  <input type="text" id="tiktokURL" placeholder="Pega el enlace de TikTok aquí...">
+  <button onclick="fetchTikTok()">Buscar</button>
+</div>
+
+<div id="videoInfo" class="video-container" style="display:none;">
+  <video id="tiktokVideo" controls></video>
+  <p id="videoTitle"></p>
+  <p id="videoAuthor"></p>
+  <div>
+    <a id="downloadVideoBtn" class="download-btn" download>Descargar Video</a>
+    <a id="downloadAudioBtn" class="download-btn" download>Descargar Audio</a>
+    <a id="viewTikTokBtn" class="download-btn" target="_blank">Ver en TikTok</a>
+  </div>
+</div>
+
+<script>
+async function fetchTikTok() {
+  const url = document.getElementById('tiktokURL').value.trim();
+  if (!url) return alert('Ingresa un enlace de TikTok.');
+
+  const apiURL = `https://www.tikwm.com/api/?url=${encodeURIComponent(url)}&hd=1`;
+
+  try {
+    const res = await fetch(apiURL);
+    const data = await res.json();
+
+    if (data.code !== 0) return alert('Error al obtener el video.');
+
+    const videoData = data.data;
+    const videoEl = document.getElementById('tiktokVideo');
+    const titleEl = document.getElementById('videoTitle');
+    const authorEl = document.getElementById('videoAuthor');
+    const downloadVideoBtn = document.getElementById('downloadVideoBtn');
+    const downloadAudioBtn = document.getElementById('downloadAudioBtn');
+    const viewTikTokBtn = document.getElementById('viewTikTokBtn');
+
+    videoEl.src = videoData.play; // Video sin marca de agua
+    titleEl.innerText = `Título: ${videoData.title}`;
+    authorEl.innerText = `Autor: ${videoData.author.nickname}`;
+    downloadVideoBtn.href = videoData.play;
+    downloadVideoBtn.download = `${videoData.title}.mp4`;
+    downloadAudioBtn.href = videoData.music;
+    downloadAudioBtn.download = `${videoData.title}.mp3`;
+    viewTikTokBtn.href = url;
+
+    document.getElementById('videoInfo').style.display = 'block';
+
+  } catch(err) {
+    console.error(err);
+    alert('Error al procesar la solicitud.');
+  }
+}
+</script>
+
+</body>
+</html>
