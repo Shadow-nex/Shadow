@@ -18,6 +18,7 @@
   select { width: 80%; padding: 5px; margin: 10px 0; border-radius: 5px; border: none; }
   a.download-btn { display: inline-block; margin-top: 10px; padding: 8px 15px; border-radius: 5px; background: #ff4081; color: #fff; text-decoration: none; }
   a.download-btn:hover { background-color: #e73370; }
+  video, audio { margin-top: 10px; width: 100%; border-radius: 10px; }
 </style>
 </head>
 <body>
@@ -69,13 +70,15 @@ form.addEventListener('submit', async (e) => {
       <h2>${metadata.title}</h2>
       <p><strong>Autor:</strong> <a href="${metadata.author.url}" target="_blank">${metadata.author.name}</a></p>
       <p><strong>Duración:</strong> ${metadata.duration.timestamp} | <strong>Vistas:</strong> ${metadata.views.toLocaleString()}</p>
+      <p>${metadata.description}</p>
     `;
 
     // --- Audio Card ---
     const audioCard = document.createElement('div');
     audioCard.className = 'download-card';
     audioCard.innerHTML = `
-      <h3>Descargar Audio</h3>
+      <h3>Audio</h3>
+      <audio id="audioPlayer" controls src="${audioData.result.download.url}"></audio>
       <select id="audioQualitySelect">
         ${audioData.result.download.availableQuality.map(q => `<option value="${q}">${q} kbps</option>`).join('')}
       </select>
@@ -85,19 +88,24 @@ form.addEventListener('submit', async (e) => {
 
     const audioSelect = audioCard.querySelector('#audioQualitySelect');
     const audioBtn = audioCard.querySelector('#audioDownloadBtn');
+    const audioPlayer = audioCard.querySelector('#audioPlayer');
 
     audioSelect.addEventListener('change', async () => {
       const quality = audioSelect.value;
       const res = await fetch(`${API_BASE}/audio?url=${encodeURIComponent(url)}&quality=${quality}`);
       const data = await res.json();
-      if(data.status) audioBtn.href = data.result.download.url;
+      if(data.status){
+        audioBtn.href = data.result.download.url;
+        audioPlayer.src = data.result.download.url;
+      }
     });
 
     // --- Video Card ---
     const videoCard = document.createElement('div');
     videoCard.className = 'download-card';
     videoCard.innerHTML = `
-      <h3>Descargar Video</h3>
+      <h3>Video</h3>
+      <video id="videoPlayer" controls src="${videoData.result.download.url}"></video>
       <select id="videoQualitySelect">
         ${videoData.result.download.availableQuality.map(q => `<option value="${q}">${q}p</option>`).join('')}
       </select>
@@ -107,12 +115,16 @@ form.addEventListener('submit', async (e) => {
 
     const videoSelect = videoCard.querySelector('#videoQualitySelect');
     const videoBtn = videoCard.querySelector('#videoDownloadBtn');
+    const videoPlayer = videoCard.querySelector('#videoPlayer');
 
     videoSelect.addEventListener('change', async () => {
       const quality = videoSelect.value;
       const res = await fetch(`${API_BASE}/video?url=${encodeURIComponent(url)}&quality=${quality}`);
       const data = await res.json();
-      if(data.status) videoBtn.href = data.result.download.url;
+      if(data.status){
+        videoBtn.href = data.result.download.url;
+        videoPlayer.src = data.result.download.url;
+      }
     });
 
   } catch (err) {

@@ -33,6 +33,8 @@
 <div class="download-section" id="downloadSection"></div>
 
 <script>
+const API_BASE = "https://api.vreden.my.id/api/v1/download/youtube";
+
 const form = document.getElementById('downloadForm');
 const videoInfoDiv = document.getElementById('videoInfo');
 const downloadSection = document.getElementById('downloadSection');
@@ -46,12 +48,12 @@ form.addEventListener('submit', async (e) => {
   downloadSection.innerHTML = '';
 
   try {
-    // API Audio (128kbps por default, luego se puede cambiar)
-    const audioRes = await fetch(`https://api.vreden.my.id/api/v1/download/youtube/audio?url=${encodeURIComponent(url)}&quality=128`);
+    // --- Audio ---
+    const audioRes = await fetch(`${API_BASE}/audio?url=${encodeURIComponent(url)}&quality=128`);
     const audioData = await audioRes.json();
 
-    // API Video (360p por default, luego se puede cambiar)
-    const videoRes = await fetch(`https://api.vreden.my.id/api/v1/download/youtube/video?url=${encodeURIComponent(url)}&quality=360`);
+    // --- Video ---
+    const videoRes = await fetch(`${API_BASE}/video?url=${encodeURIComponent(url)}&quality=360`);
     const videoData = await videoRes.json();
 
     if (!audioData.status || !videoData.status) {
@@ -86,7 +88,7 @@ form.addEventListener('submit', async (e) => {
 
     audioSelect.addEventListener('change', async () => {
       const quality = audioSelect.value;
-      const res = await fetch(`https://api.vreden.my.id/api/v1/download/youtube/audio?url=${encodeURIComponent(url)}&quality=${quality}`);
+      const res = await fetch(`${API_BASE}/audio?url=${encodeURIComponent(url)}&quality=${quality}`);
       const data = await res.json();
       if(data.status) audioBtn.href = data.result.download.url;
     });
@@ -108,7 +110,7 @@ form.addEventListener('submit', async (e) => {
 
     videoSelect.addEventListener('change', async () => {
       const quality = videoSelect.value;
-      const res = await fetch(`https://api.vreden.my.id/api/v1/download/youtube/video?url=${encodeURIComponent(url)}&quality=${quality}`);
+      const res = await fetch(`${API_BASE}/video?url=${encodeURIComponent(url)}&quality=${quality}`);
       const data = await res.json();
       if(data.status) videoBtn.href = data.result.download.url;
     });
