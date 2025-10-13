@@ -109,71 +109,78 @@
   </style>
 </head>
 <body>
-  <h1>🎬 𝐆𝐚𝐥𝐞𝐫𝐢𝐚 𝐃𝐞 𝐕𝐢𝐝𝐞𝐨𝐬 𝐃𝐞 𝐑𝐢𝐧 𝐈𝐭𝐨𝐬𝐡𝐢 🔥</h1>
+  <h1>🎬 𝐆𝐚𝐥𝐞𝐫𝐢𝐚 𝐃𝐞 𝐕𝐢𝐝𝐞𝐨𝐬 𝐃𝐞 𝐑𝐢𝐧 𝐈𝐭𝐨𝐬𝐡𝐢 💜</h1>
   <div id="counter">🎞️ Cargando videos...</div>
   <div class="gallery" id="gallery"></div>
 
   <script>
-    // Carpeta local (puedes cambiarla a tu hosting si deseas)
-    const folder = '/storage/emulated/0/club/videos/';
+    const domain = 'https://shadow-xyz.vercel.app';
+    const folder = '/videos/';
     const extensions = ['mp4', 'webm', 'mov', 'mkv'];
+    const maxVideos = 50; // puedes aumentar si deseas
 
     const gallery = document.getElementById('gallery');
     const counter = document.getElementById('counter');
     let totalLoaded = 0;
 
-    // Nota: Para ver archivos locales, este script necesita permisos o un servidor
-    async function getVideos() {
-      // En web hosting, aquí podrías reemplazar esto con una API o fetch a tu backend
-      // Este ejemplo asume que ya conoces los nombres de los videos
-      const videos = [
-        "intro.mp4",
-        "anime1.mkv",
-        "music_video.webm",
-        "clip_rin.mov"
-      ];
-
-      for (const vidName of videos) {
-        const videoUrl = folder + vidName;
-        totalLoaded++;
-
-        const card = document.createElement('div');
-        card.className = 'card';
-
-        const numberTag = document.createElement('div');
-        numberTag.className = 'vid-number';
-        numberTag.textContent = `#${totalLoaded}`;
-
-        const video = document.createElement('video');
-        video.src = videoUrl;
-        video.controls = true;
-
-        const copyBtn = document.createElement('button');
-        copyBtn.className = 'copy-btn';
-        copyBtn.textContent = '📋 Copiar enlace';
-        copyBtn.onclick = () => {
-          navigator.clipboard.writeText(videoUrl);
-          copyBtn.textContent = '✅ Link copiado!';
-          setTimeout(() => copyBtn.textContent = '📋 Copiar enlace', 2000);
-        };
-
-        const viewBtn = document.createElement('button');
-        viewBtn.className = 'view-btn';
-        viewBtn.textContent = '▶️ Ver video';
-        viewBtn.onclick = () => window.open(videoUrl, '_blank');
-
-        card.appendChild(video);
-        card.appendChild(numberTag);
-        card.appendChild(copyBtn);
-        card.appendChild(viewBtn);
-        gallery.appendChild(card);
+    async function checkVideo(url) {
+      try {
+        const res = await fetch(url, { method: 'HEAD' });
+        return res.ok;
+      } catch {
+        return false;
       }
-
-      counter.textContent = `🎞️ Videos cargados: ${totalLoaded}`;
-      if (totalLoaded === 0) counter.textContent = "⚠️ No se encontraron videos.";
     }
 
-    getVideos();
+    async function loadVideos() {
+      for (let i = 1; i <= maxVideos; i++) {
+        for (let ext of extensions) {
+          const vidName = `shadow${i}.${ext}`;
+          const fullUrl = `${domain}${folder}${vidName}`;
+          const exists = await checkVideo(fullUrl);
+
+          if (exists) {
+            totalLoaded++;
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const numberTag = document.createElement('div');
+            numberTag.className = 'vid-number';
+            numberTag.textContent = `#${totalLoaded}`;
+
+            const video = document.createElement('video');
+            video.src = fullUrl;
+            video.controls = true;
+
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = '📋 Copiar enlace';
+            copyBtn.onclick = () => {
+              navigator.clipboard.writeText(fullUrl);
+              copyBtn.textContent = '✅ Link copiado!';
+              setTimeout(() => copyBtn.textContent = '📋 Copiar enlace', 2000);
+            };
+
+            const viewBtn = document.createElement('button');
+            viewBtn.className = 'view-btn';
+            viewBtn.textContent = '▶️ Ver video';
+            viewBtn.onclick = () => window.open(fullUrl, '_blank');
+
+            card.appendChild(video);
+            card.appendChild(numberTag);
+            card.appendChild(copyBtn);
+            card.appendChild(viewBtn);
+            gallery.appendChild(card);
+          }
+        }
+      }
+
+      counter.textContent = totalLoaded > 0
+        ? `🎞️ Videos cargados: ${totalLoaded}`
+        : "⚠️ No se encontraron videos.";
+    }
+
+    loadVideos();
   </script>
 </body>
 </html>
