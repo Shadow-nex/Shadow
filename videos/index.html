@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎬 𝙶𝙰𝙻𝙴𝚁𝙸𝙰 𝙳𝙴 𝚅𝙸𝙳𝙴𝙾𝚂 𝚂𝙷𝙰𝙳𝙾𝚆_𝚇𝚈𝚉 💜</title>
+  <link rel="icon" href="/img/shadow1.jpg" type="image/png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(270deg, #19001f, #000000, #290033, #000000);
+      background-size: 800% 800%;
+      animation: bgMove 18s ease infinite;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    @keyframes bgMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      font-size: 2.2em;
+      color: #ff00ff;
+      margin-bottom: 10px;
+      text-shadow: 0 0 15px #ff00ff;
+    }
+
+    #counter {
+      font-size: 1em;
+      color: #cc66ff;
+      margin-bottom: 20px;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(40, 0, 40, 0.8);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+      transition: transform 0.2s, box-shadow 0.3s;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(255, 0, 255, 0.6);
+    }
+
+    video {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: black;
+    }
+
+    .vid-number {
+      position: absolute;
+      top: 5px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #ff66ff;
+      padding: 3px 7px;
+      border-radius: 6px;
+      font-size: 0.8em;
+      font-weight: bold;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      display: block;
+    }
+
+    .copy-btn {
+      background: #8000ff;
+    }
+
+    .copy-btn:hover {
+      background: #5900b3;
+    }
+
+    .view-btn {
+      background: #ff0033;
+    }
+
+    .view-btn:hover {
+      background: #b30021;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎬 𝐆𝐚𝐥𝐞𝐫𝐢𝐚 𝐃𝐞 𝐕𝐢𝐝𝐞𝐨𝐬 𝐃𝐞 𝐑𝐢𝐧 𝐈𝐭𝐨𝐬𝐡𝐢 🔥</h1>
+  <div id="counter">🎞️ Cargando videos...</div>
+  <div class="gallery" id="gallery"></div>
+
+  <script>
+    // Carpeta local (puedes cambiarla a tu hosting si deseas)
+    const folder = '/storage/emulated/0/club/videos/';
+    const extensions = ['mp4', 'webm', 'mov', 'mkv'];
+
+    const gallery = document.getElementById('gallery');
+    const counter = document.getElementById('counter');
+    let totalLoaded = 0;
+
+    // Nota: Para ver archivos locales, este script necesita permisos o un servidor
+    async function getVideos() {
+      // En web hosting, aquí podrías reemplazar esto con una API o fetch a tu backend
+      // Este ejemplo asume que ya conoces los nombres de los videos
+      const videos = [
+        "intro.mp4",
+        "anime1.mkv",
+        "music_video.webm",
+        "clip_rin.mov"
+      ];
+
+      for (const vidName of videos) {
+        const videoUrl = folder + vidName;
+        totalLoaded++;
+
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const numberTag = document.createElement('div');
+        numberTag.className = 'vid-number';
+        numberTag.textContent = `#${totalLoaded}`;
+
+        const video = document.createElement('video');
+        video.src = videoUrl;
+        video.controls = true;
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = '📋 Copiar enlace';
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(videoUrl);
+          copyBtn.textContent = '✅ Link copiado!';
+          setTimeout(() => copyBtn.textContent = '📋 Copiar enlace', 2000);
+        };
+
+        const viewBtn = document.createElement('button');
+        viewBtn.className = 'view-btn';
+        viewBtn.textContent = '▶️ Ver video';
+        viewBtn.onclick = () => window.open(videoUrl, '_blank');
+
+        card.appendChild(video);
+        card.appendChild(numberTag);
+        card.appendChild(copyBtn);
+        card.appendChild(viewBtn);
+        gallery.appendChild(card);
+      }
+
+      counter.textContent = `🎞️ Videos cargados: ${totalLoaded}`;
+      if (totalLoaded === 0) counter.textContent = "⚠️ No se encontraron videos.";
+    }
+
+    getVideos();
+  </script>
+</body>
+</html>
