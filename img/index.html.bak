@@ -83,28 +83,15 @@
       width: 100%;
       padding: 10px;
       border: none;
+      background: #00ffff;
       color: black;
       font-weight: bold;
       cursor: pointer;
       transition: 0.2s;
-      display: block;
     }
 
-    .copy-btn {
-      background: #00ffff;
-    }
-
-    .copy-btn:hover {
+    button:hover {
       background: #00b3b3;
-    }
-
-    .view-btn {
-      background: #ff0000;
-      color: white;
-    }
-
-    .view-btn:hover {
-      background: #b30000;
     }
   </style>
 </head>
@@ -150,24 +137,17 @@
             const image = document.createElement('img');
             image.src = fullUrl;
 
-            const copyBtn = document.createElement('button');
-            copyBtn.className = 'copy-btn';
-            copyBtn.textContent = '📋 Copiar enlace';
-            copyBtn.onclick = () => {
+            const button = document.createElement('button');
+            button.textContent = '📋 Copiar enlace';
+            button.onclick = () => {
               navigator.clipboard.writeText(fullUrl);
-              copyBtn.textContent = '✅ Link copiado!';
-              setTimeout(() => copyBtn.textContent = '📋 Copiar enlace', 2000);
+              button.textContent = '✅ Link copiado!';
+              setTimeout(() => button.textContent = '📋 Copiar enlace', 2000);
             };
-
-            const viewBtn = document.createElement('button');
-            viewBtn.className = 'view-btn';
-            viewBtn.textContent = '🔍 Ver imagen';
-            viewBtn.onclick = () => window.open(fullUrl, '_blank');
 
             card.appendChild(image);
             card.appendChild(numberTag);
-            card.appendChild(copyBtn);
-            card.appendChild(viewBtn);
+            card.appendChild(button);
             gallery.appendChild(card);
           }
         }
