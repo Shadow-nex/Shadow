@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>shadow_xyz 🔥</title>
+  <link rel="icon" href="https://github.com/Shadow-nex.png" type="image/png">
+  <meta name="description" content="𝚂𝙷𝙰𝙳𝙾𝚆_𝙲𝙾𝚁𝙴 🌿">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 20px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin-bottom: 50px;
+      font-size: 3em;
+      background: linear-gradient(90deg, #ff6b81, #ff9f43, #1dd1a1, #5f27cd);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientText 5s ease infinite;
+      text-align: center;
+    }
+
+    @keyframes gradientText {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .card-button {
+      position: relative;
+      width: 320px;
+      border-radius: 25px;
+      overflow: hidden;
+      text-decoration: none;
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+      background: linear-gradient(135deg, #ff6b81, #ff9f43, #1dd1a1, #5f27cd);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .card-button img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .card-content {
+      padding: 25px;
+      background: rgba(0,0,0,0.7);
+      position: relative;
+      z-index: 1;
+      transition: background 0.5s ease;
+    }
+
+    .card-content h2 {
+      margin: 0 0 10px 0;
+      font-size: 22px;
+      color: #fff;
+      transition: color 0.5s ease;
+    }
+
+    .card-content p {
+      margin: 0 0 15px 0;
+      font-size: 16px;
+      color: #ccc;
+      transition: color 0.5s ease;
+    }
+
+    .btn-hover {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 25px;
+      background: linear-gradient(90deg, #ff6b81, #1dd1a1);
+      color: #fff;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 14px;
+      text-decoration: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+
+    .card-button:hover {
+      transform: translateY(-12px) scale(1.05);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+    }
+
+    .card-button:hover img {
+      transform: scale(1.12);
+    }
+
+    .card-button:hover .card-content {
+      background: rgba(0,0,0,0.85);
+    }
+
+    .card-button:hover .card-content h2,
+    .card-button:hover .card-content p {
+      color: #1dd1a1;
+    }
+
+    .card-button:hover .btn-hover {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <h1>Descargas Disponibles</h1>
+  <div class="buttons-container">
+    
+    <a href="https://shadow-xyz.vercel.app/download/tiktok" class="card-button">
+      <img src="https://via.placeholder.com/320x200?text=TIKTOK" alt="TikTok">
+      <div class="card-content">
+        <h2>Descargas TikTok</h2>
+        <p>Descarga videos de TikTok rápida y fácilmente.</p>
+        <span class="btn-hover">Ver más <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </a>
+
+    <a href="https://shadow-xyz.vercel.app/download/youtube" class="card-button">
+      <img src="https://via.placeholder.com/320x200?text=YouTube" alt="YouTube">
+      <div class="card-content">
+        <h2>Búsquedas YouTube</h2>
+        <p>Busca cualquier video en YouTube de forma directa.</p>
+        <span class="btn-hover">Ver más <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </a>
+
+    <a href="https://shadow-xyz.vercel.app/download/youtube-descargas" class="card-button">
+      <img src="https://via.placeholder.com/320x200?text=YouTube+Descargas" alt="YouTube Descargas">
+      <div class="card-content">
+        <h2>Descargas YouTube</h2>
+        <p>Descarga videos y audios de YouTube al instante.</p>
+        <span class="btn-hover">Ver más <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </a>
+
+  </div>
+</body>
+</html>
