@@ -73,11 +73,12 @@
       object-fit: cover;
       display: block;
       transition: transform 0.5s ease;
+      border-bottom: 3px solid #1dd1a1;
     }
 
     .card-content {
       padding: 25px;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.8);
       position: relative;
       z-index: 1;
       transition: background 0.5s ease;
@@ -99,7 +100,7 @@
 
     .btn-hover {
       display: inline-block;
-      padding: 10px 20px;
+      padding: 12px 25px;
       border-radius: 25px;
       background: linear-gradient(90deg, #ff6b81, #1dd1a1);
       color: #fff;
@@ -110,6 +111,7 @@
       opacity: 0;
       transform: translateY(20px);
       transition: all 0.5s ease;
+      box-shadow: 0 5px 15px rgba(29,209,161,0.5);
     }
 
     .card-button:hover {
@@ -122,7 +124,7 @@
     }
 
     .card-button:hover .card-content {
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.95);
     }
 
     .card-button:hover .card-content h2,
@@ -134,14 +136,61 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* Estilo premium con glow */
+    .premium {
+      position: relative;
+      border-radius: 25px;
+      overflow: hidden;
+      border: 3px solid gold;
+      box-shadow: 0 0 25px gold;
+      z-index: 1;
+    }
+
+    .premium img {
+      border-bottom: 3px solid gold;
+    }
+
+    .premium .btn-hover {
+      background: gold;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .premium .glow {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: calc(100% + 20px);
+      height: calc(100% + 20px);
+      border-radius: 30px;
+      background: linear-gradient(45deg, gold, orange, yellow, gold);
+      filter: blur(15px);
+      opacity: 0.7;
+      animation: glowAnim 3s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes glowAnim {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .premium img,
+    .premium .card-content {
+      position: relative;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
   <h1>Descargas Disponibles</h1>
   <div class="buttons-container">
     
+    <!-- TikTok -->
     <a href="https://shadow-xyz.vercel.app/download/tiktok" class="card-button">
-      <img src="https://via.placeholder.com/320x200?text=TIKTOK" alt="TikTok">
+      <img src="https://shadow-xyz.vercel.app/img/shadow1.jpg" alt="TikTok">
       <div class="card-content">
         <h2>Descargas TikTok</h2>
         <p>Descarga videos de TikTok rápida y fácilmente.</p>
@@ -149,8 +198,9 @@
       </div>
     </a>
 
+    <!-- YouTube -->
     <a href="https://shadow-xyz.vercel.app/download/youtube" class="card-button">
-      <img src="https://via.placeholder.com/320x200?text=YouTube" alt="YouTube">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube">
       <div class="card-content">
         <h2>Búsquedas YouTube</h2>
         <p>Busca cualquier video en YouTube de forma directa.</p>
@@ -158,12 +208,14 @@
       </div>
     </a>
 
-    <a href="https://shadow-xyz.vercel.app/download/youtube-descargas" class="card-button">
-      <img src="https://via.placeholder.com/320x200?text=YouTube+Descargas" alt="YouTube Descargas">
+    <!-- YouTube Descargas Premium -->
+    <a href="https://shadow-xyz.vercel.app/download/youtube-descargas" class="card-button premium">
+      <div class="glow"></div>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube Descargas">
       <div class="card-content">
-        <h2>Descargas YouTube</h2>
-        <p>Descarga videos y audios de YouTube al instante.</p>
-        <span class="btn-hover">Ver más <i class="fas fa-arrow-right"></i></span>
+        <h2>Descargas YouTube Premium</h2>
+        <p>Descarga videos y audios de YouTube al instante con funciones premium.</p>
+        <span class="btn-hover">Acceder <i class="fas fa-star"></i></span>
       </div>
     </a>
 
