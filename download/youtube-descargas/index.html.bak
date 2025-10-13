@@ -22,7 +22,7 @@
 </head>
 <body>
 
-<h1>Descargador YouTube</h1>
+<h1>Descargador YouTube ♻️</h1>
 
 <form id="downloadForm">
   <input type="text" id="youtubeURL" placeholder="Pega el enlace de YouTube aquí..." required>
