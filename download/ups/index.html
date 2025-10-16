@@ -6,25 +6,30 @@
   <title>Shadow Image Storage</title>
   <style>
     body {
-      background: #0a0a0a;
+      background: #000;
       color: #eee;
       font-family: 'Poppins', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
     img {
-      max-width: 90%;
-      max-height: 80vh;
-      border-radius: 20px;
-      box-shadow: 0 0 20px #333;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100vh;
+      object-fit: contain;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
     }
   </style>
 </head>
 <body>
 
-  <img id="image" src="" alt="Imagen cargando...">
+  <img id="image" src="" alt="Cargando imagen...">
 
   <script>
     // 📸 URLs de tus imágenes
