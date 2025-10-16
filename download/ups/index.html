@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kirito Uploader Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0d1117;
+    color: #c9d1d9;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 20px 10px;
+    background-image: radial-gradient(circle at 100% 100%, #1e3c721a, transparent 70%);
+  }
+
+  /* --- Encabezado --- */
+  h1 {
+    color: #58a6ff;
+    text-shadow: 0 0 10px rgba(88, 166, 255, 0.4);
+    margin-bottom: 40px;
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+    text-align: center;
+    font-weight: 700;
+  }
+  h1 i { margin-right: 10px; }
+
+  /* --- Contenedor principal --- */
+  .uploader-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 25px;
+    background: #161b22;
+    border-radius: 15px;
+    border: 1px solid #30363d;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+  }
+  .uploader-container:hover {
+    transform: translateY(-2px);
+  }
+
+  /* --- Input de Archivo (Oculto) --- */
+  .file-label {
+    display: block;
+    width: 100%;
+    padding: 18px 20px;
+    background: #21262d;
+    border: 2px dashed #30363d;
+    border-radius: 10px;
+    color: #8b949e;
+    font-size: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  .file-label:hover {
+    border-color: #58a6ff;
+    background: #272c33;
+    color: #58a6ff;
+  }
+  .file-label i { margin-right: 8px; }
+
+  input[type="file"] { display: none; }
+
+  /* --- Botón de Carga --- */
+  button.upload-btn {
+    width: 100%;
+    padding: 15px 25px;
+    font-size: 1.1rem;
+    background: #58a6ff;
+    border: none;
+    border-radius: 8px;
+    color: #0d1117;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.1s;
+    box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
+  }
+  button.upload-btn:hover { background: #79c0ff; }
+  button.upload-btn:active { transform: scale(0.98); }
+
+  /* --- Loader --- */
+  .loader {
+    border: 4px solid rgba(88, 166, 255, 0.2);
+    border-top: 4px solid #58a6ff;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 0.8s linear infinite;
+    display: none;
+    margin: 20px auto;
+  }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+  /* --- Preview y Resultados --- */
+  .preview {
+    width: 100%;
+    margin: 25px 0 15px;
+    text-align: center;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .preview img, .preview video {
+    max-width: 100%;
+    max-height: 250px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .info {
+    line-height: 1.5;
+    font-size: 0.95rem;
+    text-align: left;
+    background: #21262d;
+    padding: 15px;
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  .info span { display: block; padding: 3px 0; }
+  .info span:first-child { color: #79c0ff; font-weight: 600; border-bottom: 1px dotted #30363d; margin-bottom: 5px; }
+
+  .copy-btn {
+    background: #58a6ff;
+    border: none;
+    border-radius: 6px;
+    color: #0d1117;
+    padding: 10px 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 5px;
+  }
+  .copy-btn:hover { background: #79c0ff; }
+  .copy-btn i { margin-right: 5px; }
+
+  /* --- Cuenta Regresiva --- */
+  .countdown {
+    font-weight: 600;
+    color: #58a6ff;
+    font-size: 1rem;
+    margin-top: 20px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    background: #161b22;
+  }
+
+  /* --- Footer --- */
+  footer {
+    margin-top: auto;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #484f58;
+    padding: 20px 0;
+    border-top: 1px solid #21262d;
+  }
+
+  a { color: #58a6ff; text-decoration: none; transition: color 0.3s; }
+  a:hover { color: #79c0ff; }
+
+  /* --- Media Queries (Ajustes para móvil) --- */
+  @media(max-width: 480px){
+    h1 { font-size: 2rem; margin-bottom: 30px; }
+    .uploader-container { padding: 15px; }
+    button.upload-btn { font-size: 1rem; padding: 12px; }
+    .file-label { font-size: 0.9rem; padding: 15px; }
+    .preview img, .preview video { max-height: 200px; }
+    .info { font-size: 0.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<h1><i class="fas fa-satellite-dish"></i>Kirito Uploader Pro</h1>
+
+<div class="uploader-container">
+  <input type="file" id="fileInput" onchange="updateFileName()" />
+  <label for="fileInput" class="file-label" id="fileLabel">
+    <i class="fas fa-file-upload"></i> Selecciona un archivo (Máx. 50MB)
+  </label>
+  
+  <button class="upload-btn" onclick="upload()">
+    <i class="fas fa-cloud-upload-alt"></i> Iniciar Carga
+  </button>
+
+  <div class="loader" id="loader"></div>
+
+  <div class="preview" id="preview"></div>
+
+  <div class="info" id="info"></div>
+  <button class="copy-btn" id="copyBtn" style="display:none;" onclick="copyURL()">
+    <i class="fas fa-copy"></i> Copiar URL
+  </button>
+
+  <div class="countdown" id="countdown"></div>
+</div>
+
+<footer>
+  Canal oficial: <a href="https://whatsapp.com/channel/0029VbB46nl2ER6dZac6Nd1o" target="_blank">Kirito Bot Channel</a> | 
+  Contacto: <a href="mailto:kirito@example.com">kirito@example.com</a>
+</footer>
+
+<script>
+let countdownInterval;
+let currentURL = '';
+
+function updateFileName() {
+  const fileInput = document.getElementById('fileInput');
+  const fileLabel = document.getElementById('fileLabel');
+  if (fileInput.files.length > 0) {
+    fileLabel.innerHTML = `<i class="fas fa-check-circle"></i> Archivo seleccionado: ${fileInput.files[0].name}`;
+    fileLabel.style.borderColor = '#238636';
+  } else {
+    fileLabel.innerHTML = '<i class="fas fa-file-upload"></i> Selecciona un archivo (Máx. 50MB)';
+    fileLabel.style.borderColor = '#30363d';
+  }
+}
+
+async function upload() {
+  const fileInput = document.getElementById('fileInput');
+  const file = fileInput.files[0];
+  if (!file) {
+    alert('Por favor, selecciona un archivo para cargar.');
+    return;
+  }
+
+  const loader = document.getElementById('loader');
+  const info = document.getElementById('info');
+  const preview = document.getElementById('preview');
+  const countdown = document.getElementById('countdown');
+  const copyBtn = document.getElementById('copyBtn');
+
+  loader.style.display = 'block';
+  info.innerHTML = '';
+  preview.innerHTML = '';
+  countdown.textContent = '';
+  copyBtn.style.display = 'none';
+  currentURL = '';
+
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const base64 = reader.result;
+    const name = file.name;
+
+    let folder = 'files';
+    if (file.type.startsWith('image')) folder = 'images';
+    else if (file.type.startsWith('video')) folder = 'videos';
+
+    if(file.type.startsWith('image')) {
+      preview.innerHTML = `<img src="${base64}" alt="Vista Previa Imagen">`;
+    } else if(file.type.startsWith('video')) {
+      preview.innerHTML = `<video src="${base64}" controls muted autoplay></video>`;
+    } else {
+      preview.innerHTML = `<div style="padding: 20px;"><i class="fas fa-file-alt fa-3x"></i><p style="margin-top:10px;">Vista previa no disponible</p></div>`;
+    }
+
+    try {
+      const res = await fetch('https://upload-g923.onrender.com/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, folder, file: base64 })
+      });
+
+      const data = await res.json();
+      loader.style.display = 'none';
+
+      if(data.status){
+        info.innerHTML = `
+<span style="color: #58a6ff; font-weight: 600;">Detalles de la Carga</span>
+<span><i class="fas fa-tag"></i> Tipo: ${data.tipo}</span>
+<span><i class="fas fa-sd-card"></i> Tamaño: ${data.tamaño}</span>
+<span><i class="fas fa-info-circle"></i> Mensaje: ${data.mensaje}</span>
+        `;
+        
+        currentURL = data.url;
+        copyBtn.style.display = 'inline-block';
+        copyBtn.focus();
+
+        startCountdown(20, countdown);
+
+      } else {
+        info.innerHTML = `<span style="color: #f85149;"><i class="fas fa-times-circle"></i> Error: ${data.error || 'Desconocido'}</span>`;
+        preview.innerHTML = '';
+      }
+
+    } catch(err) {
+      loader.style.display = 'none';
+      info.innerHTML = `<span style="color: #f85149;"><i class="fas fa-exclamation-triangle"></i> Error de Conexión: ${err.message}</span>`;
+      preview.innerHTML = '';
+    }
+  }
+  reader.readAsDataURL(file);
+}
+
+function startCountdown(seconds, display){
+  let remaining = seconds;
+  clearInterval(countdownInterval);
+  display.innerHTML = `<i class="fas fa-hourglass-half"></i> Disponibilidad en URL: ${remaining}s`;
+  countdownInterval = setInterval(() => {
+    remaining--;
+    display.innerHTML = `<i class="fas fa-hourglass-half"></i> Disponibilidad en URL: ${remaining}s`;
+    if(remaining <= 0){
+      clearInterval(countdownInterval);
+      display.innerHTML = '<i class="fas fa-check-circle"></i> Archivo disponible en la URL';
+    }
+  }, 1000);
+}
+
+function copyURL(){
+  if(currentURL){
+    navigator.clipboard.writeText(currentURL)
+      .then(() => {
+        alert('¡URL copiada al portapapeles!');
+      })
+      .catch(err => {
+        console.error('Error al copiar:', err);
+        alert('Error al copiar. Por favor, copia manualmente: ' + currentURL);
+      });
+  }
+}
+</script>
+
+</body>
+</html>
