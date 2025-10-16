@@ -13,8 +13,6 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      flex-direction: column;
-      gap: 20px;
     }
     img {
       max-width: 90%;
@@ -22,28 +20,14 @@
       border-radius: 20px;
       box-shadow: 0 0 20px #333;
     }
-    button {
-      padding: 10px 20px;
-      background: #7b3ffb;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #9b5cff;
-    }
   </style>
 </head>
 <body>
 
   <img id="image" src="" alt="Imagen cargando...">
-  <button onclick="nextImage()">Cambiar imagen</button>
 
   <script>
-    // 📸 Aquí colocas las URLs de tus imágenes
+    // 📸 URLs de tus imágenes
     const images = [
       "https://shadow-xyz.vercel.app/img/shadow1.jpg",
       "https://shadow-xyz.vercel.app/img/shadow2.jpg",
@@ -59,17 +43,12 @@
       "https://shadow-xyz.vercel.app/img/shadow13.jpg"
     ];
 
-    // 🔀 Mostrar una imagen aleatoria
+    // 🔀 Mostrar una imagen aleatoria cada vez que se carga el link
     function loadRandomImage() {
       const random = Math.floor(Math.random() * images.length);
       document.getElementById("image").src = images[random];
     }
 
-    function nextImage() {
-      loadRandomImage();
-    }
-
-    // 🔁 Cada vez que se carga el link, cambia automáticamente
     window.onload = loadRandomImage;
   </script>
 
