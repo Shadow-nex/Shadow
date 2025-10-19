@@ -3,59 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shadow Image Storage</title>
+  <title>Imagen Shadow</title>
   <style>
     body {
-      background: #000;
-      color: #eee;
-      font-family: 'Poppins', sans-serif;
+      background-color: #000;
+      margin: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
     }
     img {
-      width: auto;
-      height: auto;
-      max-width: 100%;
-      max-height: 100vh;
-      object-fit: contain;
-      border: none;
-      border-radius: 0;
-      box-shadow: none;
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
-
-  <img id="image" src="" alt="Cargando imagen...">
+  <img id="shadow-img" src="" alt="Imagen Shadow">
 
   <script>
-    // 📸 URLs de tus imágenes
-    const images = [
-      "https://shadow-xyz.vercel.app/img/shadow1.jpg",
-      "https://shadow-xyz.vercel.app/img/shadow2.jpg",
-      "https://shadow-xyz.vercel.app/img/shadow3.jpg",
-      "https://shadow-xyz.vercel.app/img/shadow4.jpg",
-      "https://shadow-xyz.vercel.app/img/shadow5.jpg",
-      "https://shadow-xyz.vercel.app/img/shadow6.jpg",
-      "https://shadow-xyz.vercel.app/img/shadow7.jpg",
-      "https://shadow-xyz.vercel.app/img/shadow8.jpg",
-      "https://shadow-xyz.vercel.app/img/shadow9.jpg",
-      "https://shadow-xyz.vercel.app/img/shadow10.jpg",
-      "https://shadow-xyz.vercel.app/img/shadow11.jpg",
-      "https://shadow-xyz.vercel.app/img/shadow13.jpg"
-    ];
-
-    // 🔀 Mostrar una imagen aleatoria cada vez que se carga el link
-    function loadRandomImage() {
-      const random = Math.floor(Math.random() * images.length);
-      document.getElementById("image").src = images[random];
-    }
-
-    window.onload = loadRandomImage;
+    const n = Math.floor(Math.random() * (12 - 3 + 1)) + 3
+    const img = document.getElementById('shadow-img')
+    img.src = `https://shadow-xyz.vercel.app/img/shadow${n}.jpg`
   </script>
-
 </body>
 </html>
